@@ -863,8 +863,9 @@
     <a href="#secao-05"><span class="section-index-num">05</span><span>Sequelas e Limitações</span></a>
     <a href="#secao-06"><span class="section-index-num">06</span><span>Histórico Previdenciário</span></a>
     <a href="#secao-07"><span class="section-index-num">07</span><span>Documentação e Acesso Digital</span></a>
-    <a href="#secao-08"><span class="section-index-num">08</span><span>Orientações de Documentos</span></a>
-    <a href="#secao-09"><span class="section-index-num">09</span><span>Aviso de Segurança</span></a>
+    <a href="#secao-08"><span class="section-index-num">08</span><span>Êxito de Probabilidade</span></a>
+    <a href="#secao-09"><span class="section-index-num">09</span><span>Orientações de Documentos</span></a>
+    <a href="#secao-10"><span class="section-index-num">10</span><span>Aviso de Segurança</span></a>
   </nav>
 </aside>
 
@@ -1554,10 +1555,30 @@
   </div>
 
 
-  <!-- SEÇÃO 8: ORIENTAÇÕES FINAIS -->
+  <!-- SEÇÃO 8: ÊXITO DE PROBABILIDADE -->
   <div class="section" id="secao-08">
     <div class="section-header">
       <span class="section-num">08</span>
+      <span class="section-title">Êxito de Probabilidade</span>
+    </div>
+
+    <div class="field">
+      <label>Qual o êxito de probabilidade do caso?
+        <span class="tip">Campo de uso interno — não é uma pergunta ao cliente</span>
+      </label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep1" value="Muito provável"><label for="ep1">Muito provável</label></div>
+        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep2" value="Provável"><label for="ep2">Provável</label></div>
+        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep3" value="Pouco provável"><label for="ep3">Pouco provável</label></div>
+        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep4" value="Remoto"><label for="ep4">Remoto</label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 9: ORIENTAÇÕES FINAIS -->
+  <div class="section" id="secao-10">
+    <div class="section-header">
+      <span class="section-num">09</span>
       <span class="section-title">Orientações de Documentos</span>
     </div>
 
@@ -1569,10 +1590,10 @@
     </div>
   </div>
 
-  <!-- SEÇÃO 9: SEGURANÇA -->
+  <!-- SEÇÃO 10: SEGURANÇA -->
   <div class="section" id="secao-09">
     <div class="section-header">
-      <span class="section-num">09</span>
+      <span class="section-num">10</span>
       <span class="section-title">Aviso de Segurança</span>
     </div>
 
@@ -2045,6 +2066,7 @@ function track(el) {
         return sel;
       }
     },
+    { label: 'Êxito de probabilidade', get: () => r('exitoProbabilidade') },
     { label: 'Vídeo das limitações', get: () => r('video') },
     { label: 'Observações', get: () => v('observacoes') },
   ];
@@ -2160,7 +2182,6 @@ document.querySelectorAll('input[name="temSegundoAcidente"]').forEach(el => {
     if (typeof updateResumo === 'function') updateResumo();
   });
 });
-
 
 </script>
 </body>
