@@ -1708,6 +1708,12 @@
     updateProgress();
   }
 
+  function formatDateBR(val) {
+    if (!val) return '';
+    const [y, m, d] = val.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
   function scrollToSecondAccident() {
     toggleSecondAccident('Sim');
     const target = document.getElementById('secao-acidente-2');
@@ -1993,7 +1999,7 @@ function track(el) {
     { label: 'Telefone de recado', get: () => [v('telefone'), v('nomeContatoRecado')].filter(Boolean).join(' — ') },
     { label: 'Idade', get: () => v('idade') ? v('idade') + ' anos' : '' },
     { label: 'Escolaridade', get: () => v('escolaridade') },
-    { label: 'Data do acidente', get: () => v('dataAcidente') },
+    { label: 'Data do acidente', get: () => formatDateBR(v('dataAcidente')) },
     { label: 'Tipo de acidente', get: () => r('tipoAcidente') },
     { label: 'Como ocorreu', get: () => v('comoOcorreu') },
     { label: 'Como foi socorrido', get: () => v('socorro') },
@@ -2072,7 +2078,7 @@ function track(el) {
   ];
 
   const fieldDefsSecondAccident = [
-    { label: 'Data do acidente', get: () => v('dataAcidente2') },
+    { label: 'Data do acidente', get: () => formatDateBR(v('dataAcidente2')) },
     { label: 'Tipo de acidente', get: () => r('tipoAcidente2') },
     { label: 'Como ocorreu', get: () => v('comoOcorreu2') },
     { label: 'Como foi socorrido', get: () => v('socorro2') },
