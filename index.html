@@ -1101,10 +1101,27 @@
 
     <div class="field">
       <label>Realiza ou realizou fisioterapia?</label>
+
       <div class="radio-group">
-        <div class="radio-btn"><input type="radio" name="fisio" id="fi1" value="Sim, em andamento"><label for="fi1">Sim, em andamento</label></div>
-        <div class="radio-btn"><input type="radio" name="fisio" id="fi2" value="Sim, concluída"><label for="fi2">Concluída</label></div>
-        <div class="radio-btn"><input type="radio" name="fisio" id="fi3" value="Não"><label for="fi3">Não</label></div>
+        <div class="radio-btn">
+          <input type="radio" name="fisio" id="fi1" value="Concluída">
+          <label for="fi1">Concluída</label>
+        </div>
+
+        <div class="radio-btn">
+          <input type="radio" name="fisio" id="fi2" value="Sim, em andamento">
+          <label for="fi2">Sim, em andamento</label>
+        </div>
+
+        <div class="radio-btn">
+          <input type="radio" name="fisio" id="fi3" value="Não concluiu">
+          <label for="fi3">Não concluiu</label>
+        </div>
+
+        <div class="radio-btn">
+          <input type="radio" name="fisio" id="fi4" value="Não">
+          <label for="fi4">Não</label>
+        </div>
       </div>
     </div>
 
@@ -1189,10 +1206,27 @@
 
     <div class="field">
       <label>Realiza ou realizou fisioterapia?</label>
+
       <div class="radio-group">
-        <div class="radio-btn"><input type="radio" name="fisio_2" id="fi1_2" value="Sim, em andamento"><label for="fi1_2">Sim, em andamento</label></div>
-        <div class="radio-btn"><input type="radio" name="fisio_2" id="fi2_2" value="Sim, concluída"><label for="fi2_2">Concluída</label></div>
-        <div class="radio-btn"><input type="radio" name="fisio_2" id="fi3_2" value="Não"><label for="fi3_2">Não</label></div>
+        <div class="radio-btn">
+          <input type="radio" name="fisio_2" id="fi1_2" value="Concluída">
+          <label for="fi1_2">Concluída</label>
+        </div>
+
+        <div class="radio-btn">
+          <input type="radio" name="fisio_2" id="fi2_2" value="Sim, em andamento">
+          <label for="fi2_2">Sim, em andamento</label>
+        </div>
+
+        <div class="radio-btn">
+          <input type="radio" name="fisio_2" id="fi3_2" value="Não concluiu">
+          <label for="fi3_2">Não concluiu</label>
+        </div>
+
+        <div class="radio-btn">
+          <input type="radio" name="fisio_2" id="fi4_2" value="Não">
+          <label for="fi4_2">Não</label>
+        </div>
       </div>
     </div>
 
@@ -1832,16 +1866,53 @@ function track(el) {
         document.getElementById('gessoDetalheField2').style.display = show ? 'block' : 'none';
         if (!show) document.getElementById('gessoDetalhe2').value = '';
       }
-      if (name === 'fisio2') {
-        const sel = document.querySelector('input[name="fisio2"]:checked');
+      if (name === 'fisio_2') {
+        const sel = document.querySelector('input[name="fisio_2"]:checked');
+
+        const detalheField = document.getElementById('fisioDetalheField_2');
+        const detalheLabel = document.getElementById('fisioDetalheLabel_2');
+        const detalheTip = document.getElementById('fisioDetalheTip_2');
+        const detalheTexto = document.getElementById('fisioDetalhe_2');
+
         const show = !!sel;
-        document.getElementById('fisioDetalheField_2').style.display = show ? 'block' : 'none';
-        document.getElementById('fisioDetalheLabel_2').textContent = sel && sel.value === 'Não' ? 'Motivo de não ter feito fisioterapia' : 'Tempo e sessões de fisioterapia';
-        document.getElementById('fisioDetalheTip_2').textContent = sel && sel.value === 'Não' ? 'Explique por que a fisioterapia não foi realizada.' : 'Duração total, número de sessões, local de atendimento, evolução do tratamento etc.';
-        document.getElementById('fisioDetalhe_2').placeholder = sel && sel.value === 'Não'
-          ? 'Ex: Não foi encaminhado, não conseguiu vaga, custo alto, falta de orientação médica...'
-          : 'Ex: 6 meses de fisioterapia, 3x por semana, aproximadamente 72 sessões. Atendimento no Hospital X. Melhora parcial da mobilidade...';
-        if (!show) document.getElementById('fisioDetalhe_2').value = '';
+
+        detalheField.style.display = show ? 'block' : 'none';
+
+        if (!sel) {
+          detalheTexto.value = '';
+          return;
+        }
+
+        if (sel.value === 'Não concluiu') {
+          detalheLabel.childNodes[0].nodeValue =
+            'Motivo de não ter concluído a fisioterapia';
+
+          detalheTip.textContent =
+            'Explique por que o tratamento foi iniciado, mas não foi concluído.';
+
+          detalheTexto.placeholder =
+            'Ex: Abandonou o tratamento por falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários, melhora parcial ou outro motivo...';
+
+        } else if (sel.value === 'Não') {
+          detalheLabel.childNodes[0].nodeValue =
+            'Motivo de não ter feito fisioterapia';
+
+          detalheTip.textContent =
+            'Explique por que a fisioterapia não foi realizada.';
+
+          detalheTexto.placeholder =
+            'Ex: Não foi encaminhado, não conseguiu vaga, custo alto, falta de orientação médica...';
+
+        } else {
+          detalheLabel.childNodes[0].nodeValue =
+            'Tempo e sessões de fisioterapia';
+
+          detalheTip.textContent =
+            'Informe a duração, quantidade de sessões, local de atendimento e evolução do tratamento.';
+
+          detalheTexto.placeholder =
+            'Ex: 6 meses de fisioterapia, 3 vezes por semana, aproximadamente 72 sessões. Atendimento no Hospital X. Melhora parcial da mobilidade...';
+        }
       }
       if (name === 'cirurgia2') {
         const sel = document.querySelector('input[name="cirurgia2"]:checked');
@@ -1877,14 +1948,51 @@ function track(el) {
 
       if (name === 'fisio') {
         const sel = document.querySelector('input[name="fisio"]:checked');
+
+        const detalheField = document.getElementById('fisioDetalheField');
+        const detalheLabel = document.getElementById('fisioDetalheLabel');
+        const detalheTip = document.getElementById('fisioDetalheTip');
+        const detalheTexto = document.getElementById('fisioDetalhe');
+
         const show = !!sel;
-        document.getElementById('fisioDetalheField').style.display = show ? 'block' : 'none';
-        document.getElementById('fisioDetalheLabel').childNodes[0].nodeValue = sel && sel.value === 'Não' ? 'Motivo de não ter feito fisioterapia' : 'Tempo e sessões de fisioterapia';
-        document.getElementById('fisioDetalheTip').textContent = sel && sel.value === 'Não' ? 'Explique por que a fisioterapia não foi realizada.' : 'Duração total, número de sessões, local de atendimento, evolução do tratamento etc.';
-        document.getElementById('fisioDetalhe').placeholder = sel && sel.value === 'Não'
-          ? 'Ex: Não foi encaminhado, não conseguiu vaga, custo alto, falta de orientação médica...'
-          : 'Ex: 6 meses de fisioterapia, 3x por semana, aproximadamente 72 sessões. Atendimento no Hospital X. Melhora parcial da mobilidade...';
-        if (!show) document.getElementById('fisioDetalhe').value = '';
+
+        detalheField.style.display = show ? 'block' : 'none';
+
+        if (!sel) {
+          detalheTexto.value = '';
+          return;
+        }
+
+        if (sel.value === 'Não concluiu') {
+          detalheLabel.childNodes[0].nodeValue =
+            'Motivo de não ter concluído a fisioterapia';
+
+          detalheTip.textContent =
+            'Explique por que o tratamento foi iniciado, mas não foi concluído.';
+
+          detalheTexto.placeholder =
+            'Ex: Abandonou o tratamento por falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários, melhora parcial ou outro motivo...';
+
+        } else if (sel.value === 'Não') {
+          detalheLabel.childNodes[0].nodeValue =
+            'Motivo de não ter feito fisioterapia';
+
+          detalheTip.textContent =
+            'Explique por que a fisioterapia não foi realizada.';
+
+          detalheTexto.placeholder =
+            'Ex: Não foi encaminhado, não conseguiu vaga, custo alto, falta de orientação médica...';
+
+        } else {
+          detalheLabel.childNodes[0].nodeValue =
+            'Tempo e sessões de fisioterapia';
+
+          detalheTip.textContent =
+            'Informe a duração, quantidade de sessões, local de atendimento e evolução do tratamento.';
+
+          detalheTexto.placeholder =
+            'Ex: 6 meses de fisioterapia, 3 vezes por semana, aproximadamente 72 sessões. Atendimento no Hospital X. Melhora parcial da mobilidade...';
+        }
       }
       if (name === 'cirurgia') {
         const sel = document.querySelector('input[name="cirurgia"]:checked');
@@ -2079,7 +2187,7 @@ function track(el) {
 
   const fieldDefsSecondAccident = [
     { label: 'Data do acidente', get: () => formatDateBR(v('dataAcidente_2')) },
-    { label: 'Tipo de acidente', get: () => r('tipoAcidente2') },
+    { label: 'Tipo de acidente', get: () => r('tipoAcidente_2') },
     { label: 'Como ocorreu', get: () => v('comoOcorreu2') },
     { label: 'Como foi socorrido', get: () => v('socorro2') },
     { label: 'Hospital', get: () => v('hospital2') },
@@ -2088,13 +2196,13 @@ function track(el) {
     { label: 'Cidade/Estado hospital da cirurgia', get: () => v('cidadeHospitalCirurgia2') },
     { label: 'Boletim de ocorrência', get: () => r('bo2') },
     { label: 'Registro de CAT', get: () => r('cat2') },
-    { label: 'Cirurgia', get: () => r('cirurgia2') + (v('cirurgiaTexto2') ? ' — ' + v('cirurgiaTexto2') : '') },
-    { label: 'Gesso / tala', get: () => { const val = r('gesso2'); return val === 'Sim' ? `Sim${v('gessoDetalhe2') ? ' — ' + v('gessoDetalhe2') : ''}` : val; } },
-    { label: 'Fisioterapia', get: () => r('fisio2') },
+    { label: 'Cirurgia', get: () => r('cirurgia_2') + (v('cirurgiaTexto2') ? ' — ' + v('cirurgiaTexto2') : '') },
+    { label: 'Gesso / tala', get: () => { const val = r('gesso_2'); return val === 'Sim' ? `Sim${v('gessoDetalhe2') ? ' — ' + v('gessoDetalhe2') : ''}` : val; } },
+    { label: 'Fisioterapia', get: () => r('fisio_2') },
     { label: 'Detalhes da fisioterapia', get: () => v('fisioDetalhe_2') },
-    { label: 'Laudos / exames', get: () => r('laudos2') },
-    { label: 'Auxílio-doença', get: () => r('auxilioDoenca2') + (v('auxilioDoencaTempo2') ? ' — ' + v('auxilioDoencaTempo2') : '') },
-    { label: 'ASO', get: () => r('aso2') },
+    { label: 'Laudos / exames', get: () => r('laudos_2') },
+    { label: 'Auxílio-doença', get: () => r('auxilioDoenca_2') + (v('auxilioDoencaTempo2') ? ' — ' + v('auxilioDoencaTempo2') : '') },
+    { label: 'ASO', get: () => r('aso_2') },
     { label: 'Doenças pré-existentes', get: () => v('doencas2') },
     { label: 'Profissão na época', get: () => v('profissaoEpoca2') },
     { label: 'Atividades na época', get: () => v('profissaoEpocaDetalhe2') },
