@@ -1860,12 +1860,21 @@ function track(el) {
         document.getElementById('medicacaoDetalheField2').style.display = show ? 'block' : 'none';
         if (!show) document.getElementById('medicacaoDetalhe2').value = '';
       }
-      if (name === 'gesso2') {
-        const sel = document.querySelector('input[name="gesso2"]:checked');
+      if (name === 'gesso_2') {
+        const sel = document.querySelector('input[name="gesso_2"]:checked');
         const show = sel && sel.value === 'Sim';
-        document.getElementById('gessoDetalheField2').style.display = show ? 'block' : 'none';
-        if (!show) document.getElementById('gessoDetalhe2').value = '';
+
+        const detalheField = document.getElementById('gessoDetalheField_2');
+        const detalheTexto = document.getElementById('gessoDetalhe_2');
+
+        detalheField.style.display = show ? 'block' : 'none';
+
+        if (!show) {
+          detalheTexto.value = '';
+          detalheTexto.classList.remove('filled');
+        }
       }
+      // FISIOTERAPIA DO SEGUNDO ACIDENTE
       if (name === 'fisio_2') {
         const sel = document.querySelector('input[name="fisio_2"]:checked');
 
@@ -1880,10 +1889,8 @@ function track(el) {
 
         if (!sel) {
           detalheTexto.value = '';
-          return;
-        }
-
-        if (sel.value === 'Não concluiu') {
+          detalheTexto.classList.remove('filled');
+        } else if (sel.value === 'Não concluiu') {
           detalheLabel.childNodes[0].nodeValue =
             'Motivo de não ter concluído a fisioterapia';
 
@@ -1891,7 +1898,7 @@ function track(el) {
             'Explique por que o tratamento foi iniciado, mas não foi concluído.';
 
           detalheTexto.placeholder =
-            'Ex: Abandonou o tratamento por falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários, melhora parcial ou outro motivo...';
+            'Ex: Falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários ou outro motivo...';
 
         } else if (sel.value === 'Não') {
           detalheLabel.childNodes[0].nodeValue =
@@ -1901,22 +1908,33 @@ function track(el) {
             'Explique por que a fisioterapia não foi realizada.';
 
           detalheTexto.placeholder =
-            'Ex: Não foi encaminhado, não conseguiu vaga, custo alto, falta de orientação médica...';
+            'Ex: Não foi encaminhado, não conseguiu vaga, custo alto ou falta de orientação médica...';
 
         } else {
           detalheLabel.childNodes[0].nodeValue =
             'Tempo e sessões de fisioterapia';
 
           detalheTip.textContent =
-            'Informe a duração, quantidade de sessões, local de atendimento e evolução do tratamento.';
+            'Informe duração, número de sessões, local e evolução do tratamento.';
 
           detalheTexto.placeholder =
-            'Ex: 6 meses de fisioterapia, 3 vezes por semana, aproximadamente 72 sessões. Atendimento no Hospital X. Melhora parcial da mobilidade...';
+            'Ex: 6 meses, 3 vezes por semana, aproximadamente 72 sessões, com melhora parcial...';
         }
       }
-      if (name === 'cirurgia2') {
-        const sel = document.querySelector('input[name="cirurgia2"]:checked');
-        document.getElementById('cirurgiaDetail2').style.display = sel && sel.value === 'Sim' ? 'block' : 'none';
+      // CIRURGIA DO SEGUNDO ACIDENTE
+      if (name === 'cirurgia_2') {
+        const sel = document.querySelector('input[name="cirurgia_2"]:checked');
+        const show = sel && sel.value === 'Sim';
+
+        const detalheField = document.getElementById('cirurgiaDetail_2');
+        const detalheTexto = document.getElementById('cirurgiaTexto_2');
+
+        detalheField.style.display = show ? 'block' : 'none';
+
+        if (!show) {
+          detalheTexto.value = '';
+          detalheTexto.classList.remove('filled');
+        }
       }
       if (name === 'medicacao') {
         const sel = document.querySelector('input[name="medicacao"]:checked');
