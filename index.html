@@ -1547,12 +1547,10 @@
             <input type="text" id="govbrLogin" placeholder="000.000.000-00" oninput="handleCPFInput(this)">
           </div>
           <div class="field">
-            <label>Senha do GOV.BR
-              <span class="tip">Campo oculto por padrão.</span>
-            </label>
+            <label>Senha do GOV.BR</label>
             <div style="display:flex; gap:6px;">
-              <input type="password" id="govbrSenha" placeholder="Senha do GOV.BR" oninput="track(this)" style="flex:1;">
-              <button type="button" class="btn btn-ghost" id="govbrSenhaToggle" onclick="togglePasswordVisibility(this, 'govbrSenha')" style="flex-shrink:0;">Mostrar</button>
+              <input type="text" id="govbrSenha" placeholder="Senha do GOV.BR" oninput="track(this)" style="flex:1;">
+              <button type="button" class="btn btn-ghost" id="govbrSenhaToggle" onclick="togglePasswordVisibility(this, 'govbrSenha')" style="flex-shrink:0;">Ocultar</button>
             </div>
           </div>
         </div>
@@ -2071,9 +2069,9 @@
     });
 
     const govbrSenhaInput = document.getElementById('govbrSenha');
-    if (govbrSenhaInput) govbrSenhaInput.type = 'password';
+    if (govbrSenhaInput) govbrSenhaInput.type = 'text';
     const govbrToggleBtn = document.getElementById('govbrSenhaToggle');
-    if (govbrToggleBtn) govbrToggleBtn.textContent = 'Mostrar';
+    if (govbrToggleBtn) govbrToggleBtn.textContent = 'Ocultar';
 
     updateProgress();
     showToast('Formulário limpo');
