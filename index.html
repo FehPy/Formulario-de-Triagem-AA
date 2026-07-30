@@ -240,6 +240,7 @@
   input[type="date"],
   input[type="tel"],
   input[type="number"],
+  input[type="password"],
   textarea,
   select {
     width: 100%;
@@ -1546,8 +1547,13 @@
             <input type="text" id="govbrLogin" placeholder="000.000.000-00" oninput="handleCPFInput(this)">
           </div>
           <div class="field">
-            <label>Senha do GOV.BR</label>
-            <input type="text" id="govbrSenha" placeholder="Senha do GOV.BR" oninput="track(this)">
+            <label>Senha do GOV.BR
+              <span class="tip">Campo oculto por padrão. Avalie se é realmente necessário registrar a senha — considere usar procuração eletrônica pelo próprio GOV.BR/Meu INSS como alternativa.</span>
+            </label>
+            <div style="display:flex; gap:6px;">
+              <input type="password" id="govbrSenha" placeholder="Senha do GOV.BR" oninput="track(this)" style="flex:1;">
+              <button type="button" class="btn btn-ghost" id="govbrSenhaToggle" onclick="togglePasswordVisibility(this, 'govbrSenha')" style="flex-shrink:0;">Mostrar</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1610,7 +1616,7 @@
   </div>
 
   <!-- SEÇÃO 9: ORIENTAÇÕES FINAIS -->
-  <div class="section" id="secao-10">
+  <div class="section" id="secao-09">
     <div class="section-header">
       <span class="section-num">09</span>
       <span class="section-title">Orientações de Documentos</span>
@@ -1625,7 +1631,7 @@
   </div>
 
   <!-- SEÇÃO 10: SEGURANÇA -->
-  <div class="section" id="secao-09">
+  <div class="section" id="secao-10">
     <div class="section-header">
       <span class="section-num">10</span>
       <span class="section-title">Aviso de Segurança</span>
@@ -1660,10 +1666,15 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  /* =========================================================
+     ESTADO GERAL
+  ========================================================= */
   let painValue = null;
-  let painValue2 = null;
   const THEME_STORAGE_KEY = 'triagem-theme';
 
+  /* =========================================================
+     TEMA CLARO / ESCURO
+  ========================================================= */
   function applyTheme(theme) {
     const isDark = theme === 'dark';
     document.body.classList.toggle('dark-theme', isDark);
@@ -1690,11 +1701,13 @@
     localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
   }
 
-  // PAIN SCALE
+  /* =========================================================
+     ESCALA DE DOR
+  ========================================================= */
   function selectPain(n) {
     painValue = n;
-    const btns = document.querySelectorAll('.pain-btn');
-    btns.forEach((b, i) => {
+    const btns = document.querySelectorAll('#painScale .pain-btn');
+    btns.forEach((b) => {
       b.classList.remove('selected');
       b.style.background = '';
       b.style.color = '';
@@ -1703,42 +1716,11 @@
       if (i <= n) {
         b.classList.add('selected');
         const pct = i / 10;
-        const r = Math.round(76 + pct * (201 - 76));
-        const g = Math.round(201 - pct * (201 - 76));
-        b.style.background = `rgb(${r},${g},76)`;
+        const red = Math.round(76 + pct * (201 - 76));
+        const green = Math.round(201 - pct * (201 - 76));
+        b.style.background = `rgb(${red},${green},76)`;
       }
     });
-    updateProgress();
-  }
-
-  function selectPain2(n) {
-    painValue2 = n;
-    const btns = document.querySelectorAll('#painScale2 .pain-btn');
-    btns.forEach((b, i) => {
-      b.classList.remove('selected');
-      b.style.background = '';
-      b.style.color = '';
-    });
-    btns.forEach((b, i) => {
-      if (i <= n) {
-        b.classList.add('selected');
-        const pct = i / 10;
-        const r = Math.round(76 + pct * (201 - 76));
-        const g = Math.round(201 - pct * (201 - 76));
-        b.style.background = `rgb(${r},${g},76)`;
-      }
-    });
-    updateProgress();
-  }
-
-  function toggleSecondAccident(forceValue) {
-    const selected = forceValue || r('segundoAcidente');
-    const show = selected === 'Sim';
-    const wrap = document.getElementById('secondAccidentWrap');
-    const helper = document.getElementById('segundoAcidenteHelper');
-    wrap.classList.toggle('open', show);
-    helper.classList.toggle('open', show);
-    if (!show) clearSecondAccidentFields();
     updateProgress();
   }
 
@@ -1748,31 +1730,40 @@
     return `${d}/${m}/${y}`;
   }
 
-  function scrollToSecondAccident() {
-    toggleSecondAccident('Sim');
-    const target = document.getElementById('secao-acidente-2');
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  /* =========================================================
+     SEGUNDO ACIDENTE (2.1 / 3.1) — mostra/oculta os blocos reais do HTML
+  ========================================================= */
+  function toggleSecondAccident() {
+    const show = document.getElementById('segAc_2')?.checked;
+    const sec2 = document.getElementById('segundoAcidenteSec2');
+    const sec3 = document.getElementById('segundoAcidenteSec3');
+    if (sec2) sec2.style.display = show ? 'block' : 'none';
+    if (sec3) sec3.style.display = show ? 'block' : 'none';
+    if (!show) clearSecondAccidentFields();
+    updateProgress();
   }
 
   function clearSecondAccidentFields() {
-    const wrap = document.getElementById('secondAccidentWrap');
-    wrap.querySelectorAll('input[type=text],input[type=date],input[type=number],input[type=tel],textarea,select').forEach(el => {
-      el.value = '';
-      el.classList.remove('filled');
+    ['segundoAcidenteSec2', 'segundoAcidenteSec3'].forEach(wrapId => {
+      const wrap = document.getElementById(wrapId);
+      if (!wrap) return;
+      wrap.querySelectorAll('input[type=text],input[type=date],input[type=number],input[type=tel],textarea,select').forEach(el => {
+        el.value = '';
+        el.classList.remove('filled');
+      });
+      wrap.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(el => el.checked = false);
     });
-    wrap.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(el => el.checked = false);
-    painValue2 = null;
-    wrap.querySelectorAll('.pain-btn').forEach(b => { b.classList.remove('selected'); b.style.background=''; b.style.color=''; });
-    wrap.querySelectorAll('#limitacaoTipo2 label').forEach(l => { l.style.borderColor=''; l.style.color=''; l.style.background=''; });
-    ['medicacaoDetalheField2','gessoDetalheField2','cirurgiaDetail2','fisioDetalheField_2'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.style.display='none';
+    ['gessoDetalheField_2', 'cirurgiaDetail_2', 'fisioDetalheField_2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
     });
   }
 
-  // CHECKBOX TOGGLE
+  /* =========================================================
+     CHECKBOX TOGGLE (tipo de limitação)
+  ========================================================= */
   function toggleCheck(label) {
     const cb = label.querySelector('input[type=checkbox]');
-    // The click already toggled the checkbox. Update style.
     setTimeout(() => {
       if (cb.checked) {
         label.style.borderColor = 'var(--accent)';
@@ -1787,8 +1778,9 @@
     }, 10);
   }
 
-  // TRACK FILL
-  
+  /* =========================================================
+     HELPERS DE CAMPO (foco, máscaras, senha)
+  ========================================================= */
   function focusNextOnEnter(event, nextId) {
     if (event.key !== 'Enter') return;
     event.preventDefault();
@@ -1824,7 +1816,15 @@
     track(el);
   }
 
-function track(el) {
+  function togglePasswordVisibility(btn, inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    btn.textContent = show ? 'Ocultar' : 'Mostrar';
+  }
+
+  function track(el) {
     if (el.value.trim()) {
       el.classList.add('filled');
     } else {
@@ -1833,9 +1833,9 @@ function track(el) {
     updateProgress();
   }
 
-  
-
-  // DESELECT radio on second click — listen on label (where user actually clicks)
+  /* =========================================================
+     RADIOS: desselecionar ao clicar de novo
+  ========================================================= */
   document.querySelectorAll('.radio-btn label').forEach(lbl => {
     lbl.addEventListener('click', function(e) {
       const input = document.getElementById(this.htmlFor);
@@ -1847,101 +1847,74 @@ function track(el) {
     });
   });
 
-  document.querySelectorAll('input[type=radio]').forEach(r => {
-    r.addEventListener('change', function() {
-      // Run named conditionals on any change
+  /* =========================================================
+     RADIOS: lógica condicional por grupo
+  ========================================================= */
+  document.querySelectorAll('input[type=radio]').forEach(radioEl => {
+    radioEl.addEventListener('change', function() {
       const name = this.name;
-      if (name === 'segundoAcidente') {
+
+      if (name === 'temSegundoAcidente') {
         toggleSecondAccident();
       }
-      if (name === 'medicacao2') {
-        const sel = document.querySelector('input[name="medicacao2"]:checked');
-        const show = sel && sel.value === 'Sim';
-        document.getElementById('medicacaoDetalheField2').style.display = show ? 'block' : 'none';
-        if (!show) document.getElementById('medicacaoDetalhe2').value = '';
-      }
+
       if (name === 'gesso_2') {
         const sel = document.querySelector('input[name="gesso_2"]:checked');
         const show = sel && sel.value === 'Sim';
-
         const detalheField = document.getElementById('gessoDetalheField_2');
         const detalheTexto = document.getElementById('gessoDetalhe_2');
-
         detalheField.style.display = show ? 'block' : 'none';
-
         if (!show) {
           detalheTexto.value = '';
           detalheTexto.classList.remove('filled');
         }
       }
-      // FISIOTERAPIA DO SEGUNDO ACIDENTE
+
       if (name === 'fisio_2') {
         const sel = document.querySelector('input[name="fisio_2"]:checked');
-
         const detalheField = document.getElementById('fisioDetalheField_2');
         const detalheLabel = document.getElementById('fisioDetalheLabel_2');
         const detalheTip = document.getElementById('fisioDetalheTip_2');
         const detalheTexto = document.getElementById('fisioDetalhe_2');
-
         const show = !!sel;
-
         detalheField.style.display = show ? 'block' : 'none';
-
         if (!sel) {
           detalheTexto.value = '';
           detalheTexto.classList.remove('filled');
         } else if (sel.value === 'Não concluiu') {
-          detalheLabel.childNodes[0].nodeValue =
-            'Motivo de não ter concluído a fisioterapia';
-
-          detalheTip.textContent =
-            'Explique por que o tratamento foi iniciado, mas não foi concluído.';
-
-          detalheTexto.placeholder =
-            'Ex: Falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários ou outro motivo...';
-
+          detalheLabel.childNodes[0].nodeValue = 'Motivo de não ter concluído a fisioterapia';
+          detalheTip.textContent = 'Explique por que o tratamento foi iniciado, mas não foi concluído.';
+          detalheTexto.placeholder = 'Ex: Falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários ou outro motivo...';
         } else if (sel.value === 'Não') {
-          detalheLabel.childNodes[0].nodeValue =
-            'Motivo de não ter feito fisioterapia';
-
-          detalheTip.textContent =
-            'Explique por que a fisioterapia não foi realizada.';
-
-          detalheTexto.placeholder =
-            'Ex: Não foi encaminhado, não conseguiu vaga, custo alto ou falta de orientação médica...';
-
+          detalheLabel.childNodes[0].nodeValue = 'Motivo de não ter feito fisioterapia';
+          detalheTip.textContent = 'Explique por que a fisioterapia não foi realizada.';
+          detalheTexto.placeholder = 'Ex: Não foi encaminhado, não conseguiu vaga, custo alto ou falta de orientação médica...';
         } else {
-          detalheLabel.childNodes[0].nodeValue =
-            'Tempo e sessões de fisioterapia';
-
-          detalheTip.textContent =
-            'Informe duração, número de sessões, local e evolução do tratamento.';
-
-          detalheTexto.placeholder =
-            'Ex: 6 meses, 3 vezes por semana, aproximadamente 72 sessões, com melhora parcial...';
+          detalheLabel.childNodes[0].nodeValue = 'Tempo e sessões de fisioterapia';
+          detalheTip.textContent = 'Informe duração, número de sessões, local e evolução do tratamento.';
+          detalheTexto.placeholder = 'Ex: 6 meses, 3 vezes por semana, aproximadamente 72 sessões, com melhora parcial...';
         }
       }
-      // CIRURGIA DO SEGUNDO ACIDENTE
+
       if (name === 'cirurgia_2') {
         const sel = document.querySelector('input[name="cirurgia_2"]:checked');
         const show = sel && sel.value === 'Sim';
-
         const detalheField = document.getElementById('cirurgiaDetail_2');
         const detalheTexto = document.getElementById('cirurgiaTexto_2');
-
         detalheField.style.display = show ? 'block' : 'none';
-
         if (!show) {
           detalheTexto.value = '';
           detalheTexto.classList.remove('filled');
         }
       }
+
       if (name === 'medicacao') {
         const sel = document.querySelector('input[name="medicacao"]:checked');
         const show = sel && sel.value === 'Sim';
         document.getElementById('medicacaoDetalheField').style.display = show ? 'block' : 'none';
         if (!show) document.getElementById('medicacaoDetalhe').value = '';
       }
+
       if (name === 'compEndereco') {
         const sel = document.querySelector('input[name="compEndereco"]:checked');
         const isSim = sel && sel.value === 'Sim';
@@ -1951,12 +1924,14 @@ function track(el) {
         if (!isNao) document.getElementById('compEnderecoDetalhe').value = '';
         if (!isSim) document.querySelectorAll('input[name="compEnderecoWhatsapp"]').forEach(el => el.checked = false);
       }
+
       if (name === 'docFoto') {
         const sel = document.querySelector('input[name="docFoto"]:checked');
         const showWhatsapp = !!sel && sel.value !== 'Não';
         document.getElementById('docFotoWhatsappField').style.display = showWhatsapp ? 'block' : 'none';
         if (!showWhatsapp) document.querySelectorAll('input[name="docFotoWhatsapp"]').forEach(el => el.checked = false);
       }
+
       if (name === 'gesso') {
         const sel = document.querySelector('input[name="gesso"]:checked');
         const show = sel && sel.value === 'Sim';
@@ -1966,62 +1941,41 @@ function track(el) {
 
       if (name === 'fisio') {
         const sel = document.querySelector('input[name="fisio"]:checked');
-
         const detalheField = document.getElementById('fisioDetalheField');
         const detalheLabel = document.getElementById('fisioDetalheLabel');
         const detalheTip = document.getElementById('fisioDetalheTip');
         const detalheTexto = document.getElementById('fisioDetalhe');
-
         const show = !!sel;
-
         detalheField.style.display = show ? 'block' : 'none';
-
         if (!sel) {
           detalheTexto.value = '';
-          return;
-        }
-
-        if (sel.value === 'Não concluiu') {
-          detalheLabel.childNodes[0].nodeValue =
-            'Motivo de não ter concluído a fisioterapia';
-
-          detalheTip.textContent =
-            'Explique por que o tratamento foi iniciado, mas não foi concluído.';
-
-          detalheTexto.placeholder =
-            'Ex: Abandonou o tratamento por falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários, melhora parcial ou outro motivo...';
-
+        } else if (sel.value === 'Não concluiu') {
+          detalheLabel.childNodes[0].nodeValue = 'Motivo de não ter concluído a fisioterapia';
+          detalheTip.textContent = 'Explique por que o tratamento foi iniciado, mas não foi concluído.';
+          detalheTexto.placeholder = 'Ex: Abandonou o tratamento por falta de vaga, custo, dificuldade de transporte, incompatibilidade de horários, melhora parcial ou outro motivo...';
         } else if (sel.value === 'Não') {
-          detalheLabel.childNodes[0].nodeValue =
-            'Motivo de não ter feito fisioterapia';
-
-          detalheTip.textContent =
-            'Explique por que a fisioterapia não foi realizada.';
-
-          detalheTexto.placeholder =
-            'Ex: Não foi encaminhado, não conseguiu vaga, custo alto, falta de orientação médica...';
-
+          detalheLabel.childNodes[0].nodeValue = 'Motivo de não ter feito fisioterapia';
+          detalheTip.textContent = 'Explique por que a fisioterapia não foi realizada.';
+          detalheTexto.placeholder = 'Ex: Não foi encaminhado, não conseguiu vaga, custo alto, falta de orientação médica...';
         } else {
-          detalheLabel.childNodes[0].nodeValue =
-            'Tempo e sessões de fisioterapia';
-
-          detalheTip.textContent =
-            'Informe a duração, quantidade de sessões, local de atendimento e evolução do tratamento.';
-
-          detalheTexto.placeholder =
-            'Ex: 6 meses de fisioterapia, 3 vezes por semana, aproximadamente 72 sessões. Atendimento no Hospital X. Melhora parcial da mobilidade...';
+          detalheLabel.childNodes[0].nodeValue = 'Tempo e sessões de fisioterapia';
+          detalheTip.textContent = 'Informe a duração, quantidade de sessões, local de atendimento e evolução do tratamento.';
+          detalheTexto.placeholder = 'Ex: 6 meses de fisioterapia, 3 vezes por semana, aproximadamente 72 sessões. Atendimento no Hospital X. Melhora parcial da mobilidade...';
         }
       }
+
       if (name === 'cirurgia') {
         const sel = document.querySelector('input[name="cirurgia"]:checked');
         document.getElementById('cirurgiaDetail').style.display = sel && sel.value === 'Sim' ? 'block' : 'none';
       }
+
       if (name === 'ctps') {
         const sel = document.querySelector('input[name="ctps"]:checked');
         const show = sel && sel.value === 'Sim';
         document.getElementById('ctpsWhatsappField').style.display = show ? 'block' : 'none';
         if (!show) document.querySelectorAll('input[name="ctpsWhatsapp"]').forEach(el => el.checked = false);
       }
+
       if (name === 'govbr') {
         const sel = document.querySelector('input[name="govbr"]:checked');
         const isSim = sel && sel.value === 'Sim';
@@ -2036,90 +1990,98 @@ function track(el) {
           document.getElementById('govbrMotivo').value = '';
         }
       }
+
       updateProgress();
     });
   });
 
-  // PROGRESS
+  /* =========================================================
+     PROGRESSO — calculado dinamicamente a partir dos campos
+     visíveis no formulário (não depende de contagem fixa)
+  ========================================================= */
+  function isFieldVisible(el) {
+    return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+  }
+
   function updateProgress() {
-    let totalFields = 38;
+    const container = document.querySelector('.container');
+    let total = 0;
     let filled = 0;
 
-    const ids = ['nome','telefone','idade','escolaridade','dataAcidente','comoOcorreu',
-      'socorro','hospital','cidadeHospital','hospitalCirurgia','cidadeHospitalCirurgia','profissaoEpoca','profissaoAtual',
-      'doencas','comoLimitam','atividadesAfetadas','precisaAjuda','observacoes',
-      'auxilioDoencaTempo'];
-
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && el.value.trim()) filled++;
+    container.querySelectorAll('.field input[type=text], .field input[type=date], .field input[type=number], .field input[type=tel], .field input[type=password], .field textarea, .field select').forEach(el => {
+      if (!isFieldVisible(el)) return;
+      total++;
+      if (el.value.trim()) filled++;
     });
 
-    const radioGroups = ['tipoAcidente','bo','cat','segundoAcidente','cirurgia','gesso',
-      'fisio','laudos','auxilioDoenca','aso','mudouFuncao','atividadesDiarias',
-      'frequenciaDor','pioraram','processoINSS','exercicios','govbr','ctps',
-      'compEndereco','video','ctpsWhatsapp'];
-
-    radioGroups.forEach(name => {
+    const radioNames = new Set();
+    container.querySelectorAll('.field input[type=radio]').forEach(el => {
+      if (isFieldVisible(el)) radioNames.add(el.name);
+    });
+    radioNames.forEach(name => {
+      total++;
       if (document.querySelector(`input[name="${name}"]:checked`)) filled++;
     });
 
+    const checkboxNames = new Set();
+    container.querySelectorAll('.field input[type=checkbox]').forEach(el => {
+      if (isFieldVisible(el)) checkboxNames.add(el.name);
+    });
+    checkboxNames.forEach(name => {
+      total++;
+      if (document.querySelectorAll(`input[name="${name}"]:checked`).length > 0) filled++;
+    });
+
+    // Escala de dor é um widget customizado (não é um <input> nativo)
+    total++;
     if (painValue !== null) filled++;
 
-    const checkboxes = document.querySelectorAll('input[name="limTipo"]:checked');
-    if (checkboxes.length > 0) filled++;
-
-    if (r('segundoAcidente') === 'Sim') {
-      totalFields += 19;
-      const ids2 = ['dataAcidente2','comoOcorreu2','socorro2','hospital2','cidadeHospital2','hospitalCirurgia2','cidadeHospitalCirurgia2','cirurgiaTexto2','gessoDetalhe2','fisioDetalhe_2','auxilioDoencaTempo2','doencas2','profissaoEpoca2','profissaoEpocaDetalhe2','profissaoAtual2','profissaoAtualDetalhe2','comoLimitam2','atividadesAfetadas2','precisaAjuda2','medicacaoDetalhe2'];
-      ids2.forEach(id => {
-        const el = document.getElementById(id);
-        if (el && el.value.trim()) filled++;
-      });
-      ['tipoAcidente2','bo2','cat2','cirurgia2','gesso2','fisio2','laudos2','auxilioDoenca2','aso2','mudouFuncao2','atividadesDiarias2','medicacao2','frequenciaDor2','pioraram2','exercicios2'].forEach(name => {
-        if (document.querySelector(`input[name="${name}"]:checked`)) filled++;
-      });
-      if (painValue2 !== null) filled++;
-      if (document.querySelectorAll('input[name="limTipo2"]:checked').length > 0) filled++;
-    }
-
-    const pct = Math.min(100, Math.round((filled / totalFields) * 100));
+    const pct = total ? Math.min(100, Math.round((filled / total) * 100)) : 0;
     const circle = document.getElementById('progressCircle');
     const circumference = 125.7;
     circle.style.strokeDashoffset = circumference - (circumference * pct / 100);
     document.getElementById('progressPct').textContent = pct + '%';
   }
 
-  // CLEAR
+  /* =========================================================
+     LIMPAR FORMULÁRIO
+  ========================================================= */
   function clearAll() {
     if (!confirm('Limpar todo o formulário?')) return;
-    document.querySelectorAll('input[type=text],input[type=date],input[type=number],input[type=tel],textarea,select').forEach(el => {
+
+    document.querySelectorAll('input[type=text],input[type=date],input[type=number],input[type=tel],input[type=password],textarea,select').forEach(el => {
       el.value = '';
       el.classList.remove('filled');
     });
     document.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(el => el.checked = false);
+
     painValue = null;
     document.querySelectorAll('.pain-btn').forEach(b => { b.classList.remove('selected'); b.style.background=''; b.style.color=''; });
     document.querySelectorAll('#limitacaoTipo label').forEach(l => { l.style.borderColor=''; l.style.color=''; l.style.background=''; });
-    document.getElementById('medicacaoDetalheField').style.display='none';
-    document.getElementById('compEnderecoDetalheField').style.display='none';
-    document.getElementById('compEnderecoWhatsappField').style.display='none';
-    document.getElementById('docFotoWhatsappField').style.display='none';
-    document.getElementById('gessoDetalheField').style.display='none';
-    document.getElementById('cirurgiaDetail').style.display='none';
-    document.getElementById('secondAccidentWrap').classList.remove('open');
-    document.getElementById('segundoAcidenteHelper').classList.remove('open');
-    clearSecondAccidentFields();
-    document.getElementById('fisioDetalheField').style.display='none';
-    document.getElementById('govbrSenhaField').style.display='none';
-    document.getElementById('govbrMotivoField').style.display='none';
-    document.getElementById('govbrMotivo').value='';
-    document.getElementById('ctpsWhatsappField').style.display='none';
+
+    [
+      'medicacaoDetalheField', 'compEnderecoDetalheField', 'compEnderecoWhatsappField',
+      'docFotoWhatsappField', 'gessoDetalheField', 'cirurgiaDetail', 'fisioDetalheField',
+      'govbrSenhaField', 'govbrMotivoField', 'ctpsWhatsappField',
+      'gessoDetalheField_2', 'cirurgiaDetail_2', 'fisioDetalheField_2',
+      'segundoAcidenteSec2', 'segundoAcidenteSec3'
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    const govbrSenhaInput = document.getElementById('govbrSenha');
+    if (govbrSenhaInput) govbrSenhaInput.type = 'password';
+    const govbrToggleBtn = document.getElementById('govbrSenhaToggle');
+    if (govbrToggleBtn) govbrToggleBtn.textContent = 'Mostrar';
+
     updateProgress();
     showToast('Formulário limpo');
   }
 
-  // SUMMARY
+  /* =========================================================
+     RESUMO — Triagem principal
+  ========================================================= */
   const fieldDefs = [
     { label: 'Nome completo', get: () => v('nome') },
     { label: 'Telefone de recado', get: () => [v('telefone'), v('nomeContatoRecado')].filter(Boolean).join(' — ') },
@@ -2135,7 +2097,7 @@ function track(el) {
     { label: 'Cidade/Estado hospital da cirurgia', get: () => v('cidadeHospitalCirurgia') },
     { label: 'Boletim de ocorrência', get: () => r('bo') },
     { label: 'Registro de CAT', get: () => r('cat') },
-    { label: 'Segundo acidente relevante', get: () => r('segundoAcidente') },
+    { label: 'Segundo acidente relevante', get: () => r('temSegundoAcidente') },
     { label: 'Cirurgia', get: () => r('cirurgia') + (v('cirurgiaTexto') ? ' — ' + v('cirurgiaTexto') : '') },
     { label: 'Gesso / tala', get: () => { const val = r('gesso'); return val === 'Sim' ? `Sim${v('gessoDetalhe') ? ' — ' + v('gessoDetalhe') : ''}` : val; } },
     { label: 'Fisioterapia', get: () => r('fisio') },
@@ -2203,40 +2165,29 @@ function track(el) {
     { label: 'Observações', get: () => v('observacoes') },
   ];
 
+  /* =========================================================
+     RESUMO — Segundo acidente (só os campos que existem de fato
+     no HTML: seções 2.1 e 3.1, com sufixo "_2")
+  ========================================================= */
   const fieldDefsSecondAccident = [
     { label: 'Data do acidente', get: () => formatDateBR(v('dataAcidente_2')) },
     { label: 'Tipo de acidente', get: () => r('tipoAcidente_2') },
-    { label: 'Como ocorreu', get: () => v('comoOcorreu2') },
-    { label: 'Como foi socorrido', get: () => v('socorro2') },
-    { label: 'Hospital', get: () => v('hospital2') },
-    { label: 'Cidade/Estado hospital', get: () => v('cidadeHospital2') },
-    { label: 'Hospital da cirurgia', get: () => v('hospitalCirurgia2') },
-    { label: 'Cidade/Estado hospital da cirurgia', get: () => v('cidadeHospitalCirurgia2') },
-    { label: 'Boletim de ocorrência', get: () => r('bo2') },
-    { label: 'Registro de CAT', get: () => r('cat2') },
-    { label: 'Cirurgia', get: () => r('cirurgia_2') + (v('cirurgiaTexto2') ? ' — ' + v('cirurgiaTexto2') : '') },
-    { label: 'Gesso / tala', get: () => { const val = r('gesso_2'); return val === 'Sim' ? `Sim${v('gessoDetalhe2') ? ' — ' + v('gessoDetalhe2') : ''}` : val; } },
+    { label: 'Como ocorreu', get: () => v('comoOcorreu_2') },
+    { label: 'Como foi socorrido', get: () => v('socorro_2') },
+    { label: 'Hospital', get: () => v('hospital_2') },
+    { label: 'Cidade/Estado hospital', get: () => v('cidadeHospital_2') },
+    { label: 'Hospital da cirurgia', get: () => v('hospitalCirurgia_2') },
+    { label: 'Cidade/Estado hospital da cirurgia', get: () => v('cidadeHospitalCirurgia_2') },
+    { label: 'Boletim de ocorrência', get: () => r('bo_2') },
+    { label: 'Registro de CAT', get: () => r('cat_2') },
+    { label: 'Cirurgia', get: () => r('cirurgia_2') + (v('cirurgiaTexto_2') ? ' — ' + v('cirurgiaTexto_2') : '') },
+    { label: 'Gesso / tala', get: () => { const val = r('gesso_2'); return val === 'Sim' ? `Sim${v('gessoDetalhe_2') ? ' — ' + v('gessoDetalhe_2') : ''}` : val; } },
     { label: 'Fisioterapia', get: () => r('fisio_2') },
     { label: 'Detalhes da fisioterapia', get: () => v('fisioDetalhe_2') },
     { label: 'Laudos / exames', get: () => r('laudos_2') },
-    { label: 'Auxílio-doença', get: () => r('auxilioDoenca_2') + (v('auxilioDoencaTempo2') ? ' — ' + v('auxilioDoencaTempo2') : '') },
+    { label: 'Auxílio-doença', get: () => r('auxilioDoenca_2') + (v('auxilioDoencaTempo_2') ? ' — ' + v('auxilioDoencaTempo_2') : '') },
     { label: 'ASO', get: () => r('aso_2') },
-    { label: 'Doenças pré-existentes', get: () => v('doencas2') },
-    { label: 'Profissão na época', get: () => v('profissaoEpoca2') },
-    { label: 'Atividades na época', get: () => v('profissaoEpocaDetalhe2') },
-    { label: 'Profissão atual', get: () => v('profissaoAtual2') },
-    { label: 'Atividades atuais', get: () => v('profissaoAtualDetalhe2') },
-    { label: 'Mudou de função/ritmo', get: () => r('mudouFuncao2') },
-    { label: 'Como as sequelas limitam', get: () => v('comoLimitam2') },
-    { label: 'Atividades diárias', get: () => r('atividadesDiarias2') },
-    { label: 'Atividades afetadas', get: () => v('atividadesAfetadas2') },
-    { label: 'Precisa de ajuda', get: () => v('precisaAjuda2') },
-    { label: 'Intensidade da dor', get: () => painValue2 !== null ? painValue2 + '/10' : '' },
-    { label: 'Frequência da dor', get: () => r('frequenciaDor2') },
-    { label: 'Sequelas pioraram', get: () => r('pioraram2') },
-    { label: 'Tipo de limitação', get: () => [...document.querySelectorAll('input[name="limTipo2"]:checked')].map(c=>c.value).join(', ') },
-    { label: 'Uso de medicação', get: () => { const val = r('medicacao2'); return val === 'Sim' ? `Sim${v('medicacaoDetalhe2') ? ' — ' + v('medicacaoDetalhe2') : ''}` : val; } },
-    { label: 'Exercícios físicos', get: () => r('exercicios2') },
+    { label: 'Doenças pré-existentes', get: () => v('doencas_2') },
   ];
 
   function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
@@ -2268,7 +2219,7 @@ function track(el) {
   function openSummary() {
     const container = document.getElementById('summaryContent');
     let html = `<div class="summary-group-title">Triagem principal</div>${renderSummaryItems(fieldDefs)}`;
-    if (r('segundoAcidente') === 'Sim' && hasAnyValue(fieldDefsSecondAccident)) {
+    if (r('temSegundoAcidente') === 'Sim' && hasAnyValue(fieldDefsSecondAccident)) {
       html += `<div class="summary-group-title">Acidente 2</div>${renderSummaryItems(fieldDefsSecondAccident)}`;
     }
     container.innerHTML = html;
@@ -2280,7 +2231,7 @@ function track(el) {
 
   function copyText() {
     const blocks = [buildSummaryTextBlock('TRIAGEM PRINCIPAL', fieldDefs)];
-    if (r('segundoAcidente') === 'Sim' && hasAnyValue(fieldDefsSecondAccident)) {
+    if (r('temSegundoAcidente') === 'Sim' && hasAnyValue(fieldDefsSecondAccident)) {
       blocks.push(buildSummaryTextBlock('ACIDENTE 2', fieldDefsSecondAccident));
     }
     navigator.clipboard.writeText(blocks.filter(Boolean).join('\n\n')).then(() => showToast('Copiado para a área de transferência!'));
@@ -2293,28 +2244,14 @@ function track(el) {
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-
-  document.querySelectorAll('#telefone').forEach(el => {
-    el.value = formatPhone(el.value);
-  });
-  document.querySelectorAll('#govbrLogin').forEach(el => {
-    el.value = formatCPF(el.value);
-  });
+  /* =========================================================
+     INICIALIZAÇÃO
+  ========================================================= */
+  document.querySelectorAll('#telefone').forEach(el => { el.value = formatPhone(el.value); });
+  document.querySelectorAll('#govbrLogin').forEach(el => { el.value = formatCPF(el.value); });
 
   applyTheme(getPreferredTheme());
   updateProgress();
-
-document.querySelectorAll('input[name="temSegundoAcidente"]').forEach(el => {
-  el.addEventListener('change', () => {
-    const show = document.getElementById('segAc_2')?.checked;
-    const sec2 = document.getElementById('segundoAcidenteSec2');
-    const sec3 = document.getElementById('segundoAcidenteSec3');
-    if (sec2) sec2.style.display = show ? 'block' : 'none';
-    if (sec3) sec3.style.display = show ? 'block' : 'none';
-    if (typeof updateResumo === 'function') updateResumo();
-  });
-});
-
 </script>
 </body>
 </html>
