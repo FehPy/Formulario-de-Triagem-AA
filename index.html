@@ -2081,6 +2081,13 @@
 
     updateProgress();
     showToast('Formulário limpo');
+
+    // Após limpar o formulário, retorna automaticamente ao topo da página.
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }
 
   /* =========================================================
@@ -2260,3 +2267,4 @@
 </script>
 </body>
 </html>
+```
