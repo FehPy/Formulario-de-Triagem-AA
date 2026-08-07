@@ -1300,13 +1300,23 @@
     </div>
 
     <div class="field">
+      <label>Como a sequela limitava o cliente nessa função?</label>
+      <textarea id="limitacaoEpoca" placeholder="Descreva como a sequela dificultava ou reduzia o desempenho das atividades exercidas na época..." oninput="track(this)" style="min-height:70px"></textarea>
+    </div>
+
+    <div class="field">
       <label>Profissão / função atual</label>
       <input type="text" id="profissaoAtual" placeholder="Ex: Mesma função, afastado, desempregado..." oninput="track(this)">
     </div>
 
     <div class="field">
       <label>O que o cliente faz atualmente nessa função?</label>
-      <textarea id="profissaoAtualDetalhe" placeholder="Descreva as atividades atuais, adaptações realizadas, limitações no desempenho..." oninput="track(this)" style="min-height:70px"></textarea>
+      <textarea id="profissaoAtualDetalhe" placeholder="Descreva as atividades atuais, adaptações realizadas e rotina de trabalho..." oninput="track(this)" style="min-height:70px"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Como a sequela limita o cliente na função atual?</label>
+      <textarea id="limitacaoAtual" placeholder="Descreva como a sequela dificulta, restringe ou reduz o desempenho das atividades exercidas atualmente..." oninput="track(this)" style="min-height:70px"></textarea>
     </div>
 
     <div class="field">
@@ -1319,10 +1329,6 @@
       </div>
     </div>
 
-    <div class="field">
-      <label>Como as sequelas te limitam?</label>
-      <textarea id="comoLimitam" placeholder="Descreva as limitações funcionais e físicas relatadas pelo cliente..." oninput="track(this)"></textarea>
-    </div>
   </div>
 
   <!-- SEÇÃO 5: SEQUELAS -->
@@ -2106,10 +2112,11 @@
     { label: 'Doenças pré-existentes', get: () => v('doencas') },
     { label: 'Profissão na época', get: () => v('profissaoEpoca') },
     { label: 'Atividades na época', get: () => v('profissaoEpocaDetalhe') },
+    { label: 'Limitações na função da época', get: () => v('limitacaoEpoca') },
     { label: 'Profissão atual', get: () => v('profissaoAtual') },
     { label: 'Atividades atuais', get: () => v('profissaoAtualDetalhe') },
+    { label: 'Limitações na função atual', get: () => v('limitacaoAtual') },
     { label: 'Mudou de função/ritmo', get: () => r('mudouFuncao') },
-    { label: 'Como as sequelas limitam', get: () => v('comoLimitam') },
     { label: 'Atividades diárias', get: () => r('atividadesDiarias') },
     { label: 'Atividades afetadas', get: () => v('atividadesAfetadas') },
     { label: 'Precisa de ajuda', get: () => v('precisaAjuda') },
