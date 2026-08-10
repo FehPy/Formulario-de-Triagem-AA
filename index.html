@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,7 +7,6 @@
 <title>Entrevista Jurídica</title>
 <link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACPklEQVR42u2b304TQRSHv5lCCgoRomKs/ClecCGJRkR8AK+58Ul8A+VlfAG449oLaiJGg0YIaaMSQhVjRNNAgXoBid3t7HZLzK575py73Znd9Hzzm/ObmXQNPcSz5VaLHMTSojFJ+xopSV8UhpWcfJIcjNTEk6rB+pJ8VG7Wl+SjcrR4Htan0Xflan1LPgxBp4DvAIyP8lcFKAAFoAAUgAI4i75/9aKnj2FkMLp99QO83E72rif34e6t6PbNOryo5EwBD8tgExxUDRVh9qbAKTAyCDM3uvd7MAUFK7QGPJqOby8YmJ8SXASnr8LYcHT7nRIMF4W7wEI5RiFlgTZ4chq8vjcOA/2d/UpXYHw0/tlcAtjYDV73F2BuIll9CD+bSwDrn6B50mmJ7QfUl4swWwr2+f4btuoCADSa8HYneG/0EsyM/b2en4S+0C+p1CCNk4pUiuBaNVryLus7Oob1z4JcoH4A1f3gvdvX4PrQufUNBNvefIHDY2E2WKm6LTFsi61z+eduM9QtPu7Bj0ZwwzQ32bns3f4K334JXAidtuBVaGRda36XUsSsBF87LDEL68sMQKMJ73Zi6kTtrAaI3gusRRS4NK0vUwB7P6G233k/TevLFAAOm0vb+jKxwfZ4vwvPV/gvQo/FFYAC8Dv0/wE6BRSAAlAACkABKAAF4C2AXj4wkhZLi8aoAhQAvX1nJ0n+AQX4BKE9V50CUWR8GH2nAiRDcOUWm6yU06K4QbUXfVBC8l0VkFdF9DJwfwAgf6pOCKCLCQAAAABJRU5ErkJggg==">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACPklEQVR42u2b304TQRSHv5lCCgoRomKs/ClecCGJRkR8AK+58Ul8A+VlfAG449oLaiJGg0YIaaMSQhVjRNNAgXoBid3t7HZLzK575py73Znd9Hzzm/ObmXQNPcSz5VaLHMTSojFJ+xopSV8UhpWcfJIcjNTEk6rB+pJ8VG7Wl+SjcrR4Htan0Xflan1LPgxBp4DvAIyP8lcFKAAFoAAUgAI4i75/9aKnj2FkMLp99QO83E72rif34e6t6PbNOryo5EwBD8tgExxUDRVh9qbAKTAyCDM3uvd7MAUFK7QGPJqOby8YmJ8SXASnr8LYcHT7nRIMF4W7wEI5RiFlgTZ4chq8vjcOA/2d/UpXYHw0/tlcAtjYDV73F2BuIll9CD+bSwDrn6B50mmJ7QfUl4swWwr2+f4btuoCADSa8HYneG/0EsyM/b2en4S+0C+p1CCNk4pUiuBaNVryLus7Oob1z4JcoH4A1f3gvdvX4PrQufUNBNvefIHDY2E2WKm6LTFsi61z+eduM9QtPu7Bj0ZwwzQ32bns3f4K334JXAidtuBVaGRda36XUsSsBF87LDEL68sMQKMJ73Zi6kTtrAaI3gusRRS4NK0vUwB7P6G233k/TevLFAAOm0vb+jKxwfZ4vwvPV/gvQo/FFYAC8Dv0/wE6BRSAAlAACkABKAAF4C2AXj4wkhZLi8aoAhQAvX1nJ0n+AQX4BKE9V50CUWR8GH2nAiRDcOUWm6yU06K4QbUXfVBC8l0VkFdF9DJwfwAgf6pOCKCLCQAAAABJRU5ErkJggg==">
-<rect width="64" height="64" rx="14" fill="%237fb3ff"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="white">M</text></svg>'>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -825,6 +825,72 @@
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
   }
 
+
+  /* IMOBILIZAÇÃO / APOIOS — múltipla escolha */
+  .support-choice-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .support-choice {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .support-choice input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .support-choice label {
+    display: inline-block;
+    padding: 7px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    transition: all 0.2s;
+    margin-bottom: 0;
+    user-select: none;
+  }
+
+  .support-choice input:checked + label {
+    background: rgba(42,95,165,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  body.dark-theme .support-choice input:checked + label {
+    background: rgba(127,179,255,0.16);
+  }
+
+  .support-choice label:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .support-duration-wrap {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--surface2) 72%, transparent);
+  }
+
+  .support-duration-wrap.open {
+    display: block;
+  }
+
+  .support-duration-wrap label {
+    margin-bottom: 6px;
+  }
+
 </style>
 </head>
 <body>
@@ -1088,18 +1154,36 @@
     </div>
 
     <div class="field">
-      <label>Usou gesso ou tala?</label>
-      <div class="radio-group">
-        <div class="radio-btn"><input type="radio" name="gesso" id="ge1" value="Sim"><label for="ge1">Sim</label></div>
-        <div class="radio-btn"><input type="radio" name="gesso" id="ge2" value="Não"><label for="ge2">Não</label></div>
-      </div>
-    </div>
-
-    <div class="field" id="gessoDetalheField" style="display:none">
-      <label>Período de uso do gesso / tala
-        <span class="tip">Duração total de imobilização</span>
+      <label>Utilizou algum tipo de imobilização ou apoio?
+        <span class="tip">É possível selecionar mais de uma opção.</span>
       </label>
-      <input type="text" id="gessoDetalhe" placeholder="Ex: 6 semanas de gesso, de março a abril de 2023..." oninput="track(this)">
+      <div class="support-choice-group" id="supportGroup">
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioGesso" value="Gesso/tala"><label for="apoioGesso">Gesso/tala</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioTipoia" value="Tipoia"><label for="apoioTipoia">Tipoia</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioMuletas" value="Muletas"><label for="apoioMuletas">Muletas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioCadeira" value="Cadeira de rodas"><label for="apoioCadeira">Cadeira de rodas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioNao" value="Não"><label for="apoioNao">Não</label></div>
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioGessoField">
+        <label>Tempo de uso — Gesso/tala</label>
+        <input type="text" id="tempoApoioGesso" placeholder="Ex: 6 semanas, de março a abril de 2023..." oninput="track(this)">
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioTipoiaField">
+        <label>Tempo de uso — Tipoia</label>
+        <input type="text" id="tempoApoioTipoia" placeholder="Ex: 2 meses..." oninput="track(this)">
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioMuletasField">
+        <label>Tempo de uso — Muletas</label>
+        <input type="text" id="tempoApoioMuletas" placeholder="Ex: 30 dias..." oninput="track(this)">
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioCadeiraField">
+        <label>Tempo de uso — Cadeira de rodas</label>
+        <input type="text" id="tempoApoioCadeira" placeholder="Ex: 3 semanas..." oninput="track(this)">
+      </div>
     </div>
 
     <div class="field">
@@ -1193,18 +1277,36 @@
     </div>
 
     <div class="field">
-      <label>Usou gesso ou tala?</label>
-      <div class="radio-group">
-        <div class="radio-btn"><input type="radio" name="gesso_2" id="ge1_2" value="Sim"><label for="ge1_2">Sim</label></div>
-        <div class="radio-btn"><input type="radio" name="gesso_2" id="ge2_2" value="Não"><label for="ge2_2">Não</label></div>
-      </div>
-    </div>
-
-    <div class="field" id="gessoDetalheField_2" style="display:none">
-      <label>Período de uso do gesso / tala
-        <span class="tip">Duração total de imobilização</span>
+      <label>Utilizou algum tipo de imobilização ou apoio?
+        <span class="tip">É possível selecionar mais de uma opção.</span>
       </label>
-      <input type="text" id="gessoDetalhe_2" placeholder="Ex: 6 semanas de gesso, de março a abril de 2023..." oninput="track(this)">
+      <div class="support-choice-group" id="supportGroup_2">
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioGesso_2" value="Gesso/tala"><label for="apoioGesso_2">Gesso/tala</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioTipoia_2" value="Tipoia"><label for="apoioTipoia_2">Tipoia</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioMuletas_2" value="Muletas"><label for="apoioMuletas_2">Muletas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioCadeira_2" value="Cadeira de rodas"><label for="apoioCadeira_2">Cadeira de rodas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioNao_2" value="Não"><label for="apoioNao_2">Não</label></div>
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioGessoField_2">
+        <label>Tempo de uso — Gesso/tala</label>
+        <input type="text" id="tempoApoioGesso_2" placeholder="Ex: 6 semanas, de março a abril de 2023..." oninput="track(this)">
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioTipoiaField_2">
+        <label>Tempo de uso — Tipoia</label>
+        <input type="text" id="tempoApoioTipoia_2" placeholder="Ex: 2 meses..." oninput="track(this)">
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioMuletasField_2">
+        <label>Tempo de uso — Muletas</label>
+        <input type="text" id="tempoApoioMuletas_2" placeholder="Ex: 30 dias..." oninput="track(this)">
+      </div>
+
+      <div class="support-duration-wrap" id="tempoApoioCadeiraField_2">
+        <label>Tempo de uso — Cadeira de rodas</label>
+        <input type="text" id="tempoApoioCadeira_2" placeholder="Ex: 3 semanas..." oninput="track(this)">
+      </div>
     </div>
 
     <div class="field">
@@ -1759,7 +1861,7 @@
       });
       wrap.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(el => el.checked = false);
     });
-    ['gessoDetalheField_2', 'cirurgiaDetail_2', 'fisioDetalheField_2'].forEach(id => {
+    ['cirurgiaDetail_2', 'fisioDetalheField_2', 'tempoApoioGessoField_2', 'tempoApoioTipoiaField_2', 'tempoApoioMuletasField_2', 'tempoApoioCadeiraField_2'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -1839,6 +1941,82 @@
     updateProgress();
   }
 
+
+  /* =========================================================
+     IMOBILIZAÇÃO / APOIOS — múltipla escolha
+     "Não" é exclusivo. Cada item selecionado abre seu tempo de uso.
+  ========================================================= */
+  function setupSupportChoices(groupName, suffix = '') {
+    const items = [...document.querySelectorAll(`input[name="${groupName}"]`)];
+    if (!items.length) return;
+
+    const config = {
+      'Gesso/tala': ['tempoApoioGessoField' + suffix, 'tempoApoioGesso' + suffix],
+      'Tipoia': ['tempoApoioTipoiaField' + suffix, 'tempoApoioTipoia' + suffix],
+      'Muletas': ['tempoApoioMuletasField' + suffix, 'tempoApoioMuletas' + suffix],
+      'Cadeira de rodas': ['tempoApoioCadeiraField' + suffix, 'tempoApoioCadeira' + suffix]
+    };
+
+    function updateSupportFields(changedInput = null) {
+      const nao = items.find(el => el.value === 'Não');
+
+      if (changedInput) {
+        if (changedInput.value === 'Não' && changedInput.checked) {
+          items.forEach(el => {
+            if (el !== changedInput) el.checked = false;
+          });
+        } else if (changedInput.value !== 'Não' && changedInput.checked && nao) {
+          nao.checked = false;
+        }
+      }
+
+      Object.entries(config).forEach(([value, ids]) => {
+        const selected = items.some(el => el.value === value && el.checked);
+        const field = document.getElementById(ids[0]);
+        const input = document.getElementById(ids[1]);
+
+        if (field) field.classList.toggle('open', selected);
+
+        if (!selected && input) {
+          input.value = '';
+          input.classList.remove('filled');
+        }
+      });
+
+      updateProgress();
+    }
+
+    items.forEach(el => {
+      el.addEventListener('change', function() {
+        updateSupportFields(this);
+      });
+    });
+
+    updateSupportFields();
+  }
+
+  setupSupportChoices('apoio');
+  setupSupportChoices('apoio_2', '_2');
+
+  function supportSummary(groupName, suffix = '') {
+    const selected = [...document.querySelectorAll(`input[name="${groupName}"]:checked`)].map(el => el.value);
+    if (!selected.length) return '';
+    if (selected.includes('Não')) return 'Não';
+
+    const timeIds = {
+      'Gesso/tala': 'tempoApoioGesso' + suffix,
+      'Tipoia': 'tempoApoioTipoia' + suffix,
+      'Muletas': 'tempoApoioMuletas' + suffix,
+      'Cadeira de rodas': 'tempoApoioCadeira' + suffix
+    };
+
+    return selected.map(item => {
+      const tempo = timeIds[item] ? v(timeIds[item]) : '';
+      return tempo ? `${item} — ${tempo}` : item;
+    }).join('; ');
+  }
+
+
   /* =========================================================
      RADIOS: desselecionar ao clicar de novo
   ========================================================= */
@@ -1864,17 +2042,6 @@
         toggleSecondAccident();
       }
 
-      if (name === 'gesso_2') {
-        const sel = document.querySelector('input[name="gesso_2"]:checked');
-        const show = sel && sel.value === 'Sim';
-        const detalheField = document.getElementById('gessoDetalheField_2');
-        const detalheTexto = document.getElementById('gessoDetalhe_2');
-        detalheField.style.display = show ? 'block' : 'none';
-        if (!show) {
-          detalheTexto.value = '';
-          detalheTexto.classList.remove('filled');
-        }
-      }
 
       if (name === 'fisio_2') {
         const sel = document.querySelector('input[name="fisio_2"]:checked');
@@ -1938,12 +2105,6 @@
         if (!showWhatsapp) document.querySelectorAll('input[name="docFotoWhatsapp"]').forEach(el => el.checked = false);
       }
 
-      if (name === 'gesso') {
-        const sel = document.querySelector('input[name="gesso"]:checked');
-        const show = sel && sel.value === 'Sim';
-        document.getElementById('gessoDetalheField').style.display = show ? 'block' : 'none';
-        if (!show) document.getElementById('gessoDetalhe').value = '';
-      }
 
       if (name === 'fisio') {
         const sel = document.querySelector('input[name="fisio"]:checked');
@@ -2067,9 +2228,11 @@
 
     [
       'medicacaoDetalheField', 'compEnderecoDetalheField', 'compEnderecoWhatsappField',
-      'docFotoWhatsappField', 'gessoDetalheField', 'cirurgiaDetail', 'fisioDetalheField',
+      'docFotoWhatsappField', 'cirurgiaDetail', 'fisioDetalheField',
+      'tempoApoioGessoField', 'tempoApoioTipoiaField', 'tempoApoioMuletasField', 'tempoApoioCadeiraField',
       'govbrSenhaField', 'govbrMotivoField', 'ctpsWhatsappField',
-      'gessoDetalheField_2', 'cirurgiaDetail_2', 'fisioDetalheField_2',
+      'cirurgiaDetail_2', 'fisioDetalheField_2',
+      'tempoApoioGessoField_2', 'tempoApoioTipoiaField_2', 'tempoApoioMuletasField_2', 'tempoApoioCadeiraField_2',
       'segundoAcidenteSec2', 'segundoAcidenteSec3'
     ].forEach(id => {
       const el = document.getElementById(id);
@@ -2112,7 +2275,7 @@
     { label: 'Registro de CAT', get: () => r('cat') },
     { label: 'Segundo acidente relevante', get: () => r('temSegundoAcidente') },
     { label: 'Cirurgia', get: () => r('cirurgia') + (v('cirurgiaTexto') ? ' — ' + v('cirurgiaTexto') : '') },
-    { label: 'Gesso / tala', get: () => { const val = r('gesso'); return val === 'Sim' ? `Sim${v('gessoDetalhe') ? ' — ' + v('gessoDetalhe') : ''}` : val; } },
+    { label: 'Imobilização / apoio', get: () => supportSummary('apoio') },
     { label: 'Fisioterapia', get: () => r('fisio') },
     { label: 'Detalhes da fisioterapia', get: () => v('fisioDetalhe') },
     { label: 'Laudos / exames', get: () => r('laudos') },
@@ -2195,7 +2358,7 @@
     { label: 'Boletim de ocorrência', get: () => r('bo_2') },
     { label: 'Registro de CAT', get: () => r('cat_2') },
     { label: 'Cirurgia', get: () => r('cirurgia_2') + (v('cirurgiaTexto_2') ? ' — ' + v('cirurgiaTexto_2') : '') },
-    { label: 'Gesso / tala', get: () => { const val = r('gesso_2'); return val === 'Sim' ? `Sim${v('gessoDetalhe_2') ? ' — ' + v('gessoDetalhe_2') : ''}` : val; } },
+    { label: 'Imobilização / apoio', get: () => supportSummary('apoio_2', '_2') },
     { label: 'Fisioterapia', get: () => r('fisio_2') },
     { label: 'Detalhes da fisioterapia', get: () => v('fisioDetalhe_2') },
     { label: 'Laudos / exames', get: () => r('laudos_2') },
