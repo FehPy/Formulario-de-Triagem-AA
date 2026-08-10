@@ -1157,11 +1157,11 @@
         <span class="tip">É possível selecionar mais de uma opção.</span>
       </label>
       <div class="support-choice-group" id="supportGroup">
-        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioGesso" value="Gesso/tala"><label for="apoioGesso">Gesso/tala</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioTipoia" value="Tipoia"><label for="apoioTipoia">Tipoia</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioMuletas" value="Muletas"><label for="apoioMuletas">Muletas</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioCadeira" value="Cadeira de rodas"><label for="apoioCadeira">Cadeira de rodas</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioNao" value="Não"><label for="apoioNao">Não</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioGesso" value="Gesso/tala" onchange="handleSupportChoice('apoio', '', this)"><label for="apoioGesso">Gesso/tala</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioTipoia" value="Tipoia" onchange="handleSupportChoice('apoio', '', this)"><label for="apoioTipoia">Tipoia</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioMuletas" value="Muletas" onchange="handleSupportChoice('apoio', '', this)"><label for="apoioMuletas">Muletas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioCadeira" value="Cadeira de rodas" onchange="handleSupportChoice('apoio', '', this)"><label for="apoioCadeira">Cadeira de rodas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio" id="apoioNao" value="Não" onchange="handleSupportChoice('apoio', '', this)"><label for="apoioNao">Não</label></div>
       </div>
 
       <div class="support-duration-wrap" id="tempoApoioGessoField">
@@ -1280,11 +1280,11 @@
         <span class="tip">É possível selecionar mais de uma opção.</span>
       </label>
       <div class="support-choice-group" id="supportGroup_2">
-        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioGesso_2" value="Gesso/tala"><label for="apoioGesso_2">Gesso/tala</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioTipoia_2" value="Tipoia"><label for="apoioTipoia_2">Tipoia</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioMuletas_2" value="Muletas"><label for="apoioMuletas_2">Muletas</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioCadeira_2" value="Cadeira de rodas"><label for="apoioCadeira_2">Cadeira de rodas</label></div>
-        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioNao_2" value="Não"><label for="apoioNao_2">Não</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioGesso_2" value="Gesso/tala" onchange="handleSupportChoice('apoio_2', '_2', this)"><label for="apoioGesso_2">Gesso/tala</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioTipoia_2" value="Tipoia" onchange="handleSupportChoice('apoio_2', '_2', this)"><label for="apoioTipoia_2">Tipoia</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioMuletas_2" value="Muletas" onchange="handleSupportChoice('apoio_2', '_2', this)"><label for="apoioMuletas_2">Muletas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioCadeira_2" value="Cadeira de rodas" onchange="handleSupportChoice('apoio_2', '_2', this)"><label for="apoioCadeira_2">Cadeira de rodas</label></div>
+        <div class="support-choice"><input type="checkbox" name="apoio_2" id="apoioNao_2" value="Não" onchange="handleSupportChoice('apoio_2', '_2', this)"><label for="apoioNao_2">Não</label></div>
       </div>
 
       <div class="support-duration-wrap" id="tempoApoioGessoField_2">
@@ -1943,11 +1943,24 @@
 
   /* =========================================================
      IMOBILIZAÇÃO / APOIOS — múltipla escolha
-     "Não" é exclusivo. Cada item selecionado abre seu tempo de uso.
+     "Não" é exclusivo. Cada item selecionado abre seu próprio
+     campo para informar o tempo de uso.
   ========================================================= */
-  function setupSupportChoices(groupName, suffix = '') {
+  function handleSupportChoice(groupName, suffix = '', changedInput = null) {
     const items = [...document.querySelectorAll(`input[name="${groupName}"]`)];
     if (!items.length) return;
+
+    const nao = items.find(el => el.value === 'Não');
+
+    if (changedInput) {
+      if (changedInput.value === 'Não' && changedInput.checked) {
+        items.forEach(el => {
+          if (el !== changedInput) el.checked = false;
+        });
+      } else if (changedInput.value !== 'Não' && changedInput.checked && nao) {
+        nao.checked = false;
+      }
+    }
 
     const config = {
       'Gesso/tala': ['tempoApoioGessoField' + suffix, 'tempoApoioGesso' + suffix],
@@ -1956,46 +1969,29 @@
       'Cadeira de rodas': ['tempoApoioCadeiraField' + suffix, 'tempoApoioCadeira' + suffix]
     };
 
-    function updateSupportFields(changedInput = null) {
-      const nao = items.find(el => el.value === 'Não');
+    Object.entries(config).forEach(([value, ids]) => {
+      const selected = items.some(el => el.value === value && el.checked);
+      const field = document.getElementById(ids[0]);
+      const input = document.getElementById(ids[1]);
 
-      if (changedInput) {
-        if (changedInput.value === 'Não' && changedInput.checked) {
-          items.forEach(el => {
-            if (el !== changedInput) el.checked = false;
-          });
-        } else if (changedInput.value !== 'Não' && changedInput.checked && nao) {
-          nao.checked = false;
-        }
+      if (field) {
+        field.style.display = selected ? 'block' : 'none';
+        field.classList.toggle('open', selected);
       }
 
-      Object.entries(config).forEach(([value, ids]) => {
-        const selected = items.some(el => el.value === value && el.checked);
-        const field = document.getElementById(ids[0]);
-        const input = document.getElementById(ids[1]);
-
-        if (field) field.classList.toggle('open', selected);
-
-        if (!selected && input) {
-          input.value = '';
-          input.classList.remove('filled');
-        }
-      });
-
-      updateProgress();
-    }
-
-    items.forEach(el => {
-      el.addEventListener('change', function() {
-        updateSupportFields(this);
-      });
+      if (!selected && input) {
+        input.value = '';
+        input.classList.remove('filled');
+      }
     });
 
-    updateSupportFields();
+    if (typeof updateProgress === 'function') updateProgress();
   }
 
-  setupSupportChoices('apoio');
-  setupSupportChoices('apoio_2', '_2');
+  function initializeSupportChoices() {
+    handleSupportChoice('apoio', '');
+    handleSupportChoice('apoio_2', '_2');
+  }
 
   function supportSummary(groupName, suffix = '') {
     const selected = [...document.querySelectorAll(`input[name="${groupName}"]:checked`)].map(el => el.value);
@@ -2013,6 +2009,12 @@
       const tempo = timeIds[item] ? v(timeIds[item]) : '';
       return tempo ? `${item} — ${tempo}` : item;
     }).join('; ');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSupportChoices);
+  } else {
+    initializeSupportChoices();
   }
 
 
