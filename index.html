@@ -645,23 +645,23 @@
     min-height: 0;
   }
 
-  #secao-07 .field-grid.section7-grid,
-  #secao-07 .field-grid.section7-grid-tight {
+  #secao-08 .field-grid.section7-grid,
+  #secao-08 .field-grid.section7-grid-tight {
     align-items: start;
     row-gap: 4px;
     margin-bottom: 2px;
   }
 
-  #secao-07 .field-grid.section7-grid .field,
-  #secao-07 .field-grid.section7-grid-tight .field {
+  #secao-08 .field-grid.section7-grid .field,
+  #secao-08 .field-grid.section7-grid-tight .field {
     margin-bottom: 8px;
   }
 
-  #secao-07 .field-grid.section7-grid-tight .field > label {
+  #secao-08 .field-grid.section7-grid-tight .field > label {
     min-height: 28px;
   }
 
-  #secao-07 .field-grid.section7-grid-tight .field > label .tip {
+  #secao-08 .field-grid.section7-grid-tight .field > label .tip {
     min-height: 0;
   }
 
@@ -930,10 +930,9 @@
     <a href="#secao-04"><span class="section-index-num">04</span><span>Situação Profissional</span></a>
     <a href="#secao-05"><span class="section-index-num">05</span><span>Sequelas e Limitações</span></a>
     <a href="#secao-06"><span class="section-index-num">06</span><span>Histórico Previdenciário</span></a>
-    <a href="#secao-07"><span class="section-index-num">07</span><span>Documentação e Acesso Digital</span></a>
-    <a href="#secao-08"><span class="section-index-num">08</span><span>Êxito de Probabilidade</span></a>
-    <a href="#secao-09"><span class="section-index-num">09</span><span>Orientações de Documentos</span></a>
-    <a href="#secao-10"><span class="section-index-num">10</span><span>Aviso de Segurança</span></a>
+    <a href="#secao-07"><span class="section-index-num">07</span><span>Como funciona o processo</span></a>
+    <a href="#secao-08"><span class="section-index-num">08</span><span>Documentação e Acesso Digital</span></a>
+    <a href="#secao-09"><span class="section-index-num">09</span><span>Aviso de Segurança</span></a>
   </nav>
 </aside>
 
@@ -1567,10 +1566,26 @@
 
   </div>
 
-  <!-- SEÇÃO 7: DOCUMENTAÇÃO -->
+  <!-- SEÇÃO 7: COMO FUNCIONA O PROCESSO -->
   <div class="section" id="secao-07">
     <div class="section-header">
       <span class="section-num">07</span>
+      <span class="section-title">Como funciona o processo</span>
+    </div>
+
+    <div class="info-card">
+      <p><strong>Mensagem de apoio para leitura durante a entrevista:</strong></p>
+      <p>O processo, de forma geral, é bem simples e nós vamos orientar o senhor ou a senhora em cada etapa. Primeiro, precisamos reunir a documentação básica e analisar o caso para, sendo cabível, dar entrada na ação.</p>
+      <p>Depois que a ação for protocolada, o processo seguirá para análise da Justiça e, conforme o caso, poderá ser marcada uma <strong>perícia médica</strong> para avaliar as sequelas e limitações. Essa é uma das principais etapas em que precisaremos da sua participação, e nós vamos orientar sobre data, local e o que levar.</p>
+      <p>Então, de forma resumida, sua colaboração ficará principalmente em <strong>nos encaminhar a documentação inicial</strong>, <strong>comparecer à perícia quando ela for marcada</strong> e, caso o benefício seja concedido, <strong>seguir as orientações para o recebimento</strong>. O restante do andamento do processo será acompanhado pela nossa equipe.</p>
+      <p>Por isso, não precisa se preocupar em entender toda a parte jurídica. O mais importante é nos passar as informações corretamente, enviar os documentos que tiver e manter o contato conosco durante o processo.</p>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 8: DOCUMENTAÇÃO -->
+  <div class="section" id="secao-08">
+    <div class="section-header">
+      <span class="section-num">08</span>
       <span class="section-title">Documentação e Acesso Digital</span>
     </div>
 
@@ -1578,7 +1593,7 @@
     <div class="field-grid align-labels section7-grid">
       <div class="field">
         <label>Possui documento pessoal com foto?
-          <span class="tip">Selecione o tipo de documento disponível</span>
+          <span class="tip">Precisamos dele para comprovar sua identidade e vincular a documentação e a ação à pessoa correta.</span>
         </label>
         <div class="radio-group">
           <div class="radio-btn"><input type="radio" name="docFoto" id="df1" value="RG"><label for="df1">RG</label></div>
@@ -1599,7 +1614,9 @@
     <!-- Comprovante de endereço -->
     <div class="field-grid align-labels section7-grid">
       <div class="field">
-        <label>Tem comprovante de endereço no próprio nome?</label>
+        <label>Tem comprovante de endereço no próprio nome?
+          <span class="tip">Precisamos dele para confirmar seu endereço e, quando possível, facilitar o agendamento da perícia em um local mais próximo.</span>
+        </label>
         <div class="radio-group">
           <div class="radio-btn"><input type="radio" name="compEndereco" id="ce1" value="Sim"><label for="ce1">Sim</label></div>
           <div class="radio-btn"><input type="radio" name="compEndereco" id="ce2" value="Não"><label for="ce2">Não</label></div>
@@ -1623,7 +1640,9 @@
     <!-- CTPS -->
     <div class="field-grid align-labels section7-grid">
       <div class="field">
-        <label>Tem carteira de trabalho digital?</label>
+        <label>Tem carteira de trabalho digital?
+          <span class="tip">Precisamos dela para conferir seus vínculos e informações do CNIS e fazer o cálculo do benefício.</span>
+        </label>
         <div class="radio-group">
           <div class="radio-btn"><input type="radio" name="ctps" id="ct1" value="Sim"><label for="ct1">Sim</label></div>
           <div class="radio-btn"><input type="radio" name="ctps" id="ct2" value="Não"><label for="ct2">Não</label></div>
@@ -1673,7 +1692,7 @@
     <div class="field-grid align-labels section7-grid-tight">
       <div class="field">
         <label>Telefone de recado
-          <span class="tip">Solicitar sempre — canal alternativo de contato</span>
+          <span class="tip">É um contato alternativo para usarmos caso não consigamos falar com você pelo número principal, especialmente em situações importantes.</span>
         </label>
         <input type="tel" id="telefone" placeholder="(11) 99999-9999" oninput="handlePhoneInput(this)" onkeydown="focusNextOnEnter(event, 'nomeContatoRecado')">
       </div>
@@ -1685,7 +1704,7 @@
 
     <div class="field">
       <label>Registro em vídeo das limitações?
-        <span class="tip">Solicitar que o cliente grave um vídeo mostrando a lesão e a falta de mobilidade, preferencialmente filmado por terceiro</span>
+        <span class="tip">Precisamos dele para visualizar melhor a sequela e, se for pertinente, utilizá-lo como material de apoio na análise e no processo.</span>
       </label>
       <div class="radio-group">
         <div class="radio-btn"><input type="radio" name="video" id="vi1" value="Sim, já tem"><label for="vi1">Sim, já tem</label></div>
@@ -1701,54 +1720,19 @@
     </div>
   </div>
 
-
-  <!-- SEÇÃO 8: ÊXITO DE PROBABILIDADE -->
-  <div class="section" id="secao-08">
-    <div class="section-header">
-      <span class="section-num">08</span>
-      <span class="section-title">Êxito de Probabilidade</span>
-    </div>
-
-    <div class="field">
-      <label>Qual o êxito de probabilidade do caso?
-        <span class="tip">Campo de uso interno — não é uma pergunta ao cliente</span>
-      </label>
-      <div class="radio-group">
-        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep1" value="Muito provável"><label for="ep1">Muito provável</label></div>
-        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep2" value="Provável"><label for="ep2">Provável</label></div>
-        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep3" value="Pouco provável"><label for="ep3">Pouco provável</label></div>
-        <div class="radio-btn"><input type="radio" name="exitoProbabilidade" id="ep4" value="Remoto"><label for="ep4">Remoto</label></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SEÇÃO 9: ORIENTAÇÕES FINAIS -->
+  <!-- SEÇÃO 09: SEGURANÇA -->
   <div class="section" id="secao-09">
     <div class="section-header">
       <span class="section-num">09</span>
-      <span class="section-title">Orientações de Documentos</span>
-    </div>
-
-    <div class="info-card">
-      <p><strong>Mensagem de apoio para leitura durante a entrevista:</strong></p>
-      <p>Para conseguirmos prosseguir com a análise do seu caso, vamos precisar reunir alguns documentos básicos. O principal é um <strong>documento pessoal com foto</strong>, um <strong>comprovante de endereço</strong>, e tudo o que o senhor ou a senhora tiver sobre o acidente e o tratamento, como <strong>laudos, exames, atestados, receitas, prontuários, boletim de ocorrência, CAT e documentos do INSS</strong>, se houver.</p>
-      <p>Também é muito importante o <strong>vídeo mostrando a lesão e a limitação</strong>. O ideal é que esse vídeo seja gravado por outra pessoa, mostrando com clareza a parte lesionada e os movimentos que ficaram limitados, para conseguirmos demonstrar melhor a sequela no momento da análise.</p>
-      <p>Se faltar algum documento agora, não tem problema. O mais importante é separar o que já tiver e nos enviar, porque isso ajuda a dar andamento no atendimento com mais rapidez e segurança.</p>
-    </div>
-  </div>
-
-  <!-- SEÇÃO 10: SEGURANÇA -->
-  <div class="section" id="secao-10">
-    <div class="section-header">
-      <span class="section-num">10</span>
       <span class="section-title">Aviso de Segurança</span>
     </div>
 
     <div class="info-card">
       <p><strong>Mensagem de apoio para leitura durante a entrevista:</strong></p>
-      <p>Antes de encerrarmos, preciso reforçar uma orientação de segurança. <strong>Fique atento a golpes.</strong> Nossa equipe <strong>não pede PIX</strong>, não solicita depósitos e também orienta que o cliente <strong>não envie dados bancários</strong> fora do momento correto e por solicitação confirmada da equipe responsável.</p>
-      <p>O nosso principal meio de contato é o número com final <strong>2222</strong>, que é por onde normalmente enviamos o link da chamada e seguimos o atendimento. Em algumas situações, pode acontecer de entrarmos em contato por outro número, mas isso ocorre apenas para <strong>recuperar o contato com o cliente</strong> ou dar continuidade ao atendimento quando necessário.</p>
-      <p>Se houver qualquer dúvida, desconfiança ou mensagem estranha em nome do escritório, o ideal é confirmar diretamente com a nossa equipe antes de responder, enviar documentos, realizar pagamentos ou compartilhar qualquer dado sensível.</p>
+      <p>Antes de encerrarmos, preciso reforçar uma orientação importante sobre o nosso contato e sobre segurança. <strong>O nosso principal meio de comunicação é o número com final 2222</strong>, e é por ele que normalmente vamos conversar, enviar informações e acompanhar o seu atendimento.</p>
+      <p>Eventualmente, podemos entrar em contato por <strong>outro número, por mensagem ou ligação</strong>. Isso acontece apenas quando precisamos <strong>reestabelecer o contato</strong> com o senhor ou dar continuidade ao atendimento. Nesses casos, nossa preferência é que o senhor <strong>responda novamente pelo número 2222</strong>, para mantermos toda a comunicação centralizada e segura.</p>
+      <p>Qualquer outro número que entre em contato com o senhor pedindo <strong>PIX, taxa para emissão de documento, pagamento antecipado ou qualquer valor para liberar ou antecipar o benefício</strong>, não acredite. <strong>Isso é prática de golpistas.</strong> Como está previsto no contrato, <strong>o senhor só paga o escritório ao final do processo, caso realmente receba o benefício</strong>. O pagamento do benefício é realizado pelo próprio <strong>INSS</strong> e, depois, o senhor faz o depósito referente aos honorários ao escritório, conforme foi contratado.</p>
+      <p>Também vou deixar o senhor em contato com os meus <strong>assessores</strong>. Eventualmente, <strong>outros advogados ou integrantes da nossa equipe</strong> poderão entrar em contato para passar informações sobre o processo, avisar sobre a perícia ou orientar sobre alguma etapa. Somos uma equipe grande e, para evitar confusões, <strong>todos utilizamos o mesmo número principal, com final 2222</strong>.</p>
     </div>
   </div>
 
@@ -2338,7 +2322,6 @@
         return sel;
       }
     },
-    { label: 'Êxito de probabilidade', get: () => r('exitoProbabilidade') },
     { label: 'Vídeo das limitações', get: () => r('video') },
     { label: 'Observações', get: () => v('observacoes') },
   ];
