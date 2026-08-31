@@ -890,6 +890,34 @@
     margin-bottom: 6px;
   }
 
+
+  /* CONFERÊNCIA DE ENCERRAMENTO */
+  .closing-check-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    background: var(--surface);
+    box-shadow: var(--shadow-soft);
+  }
+  .closing-status {
+    border-radius: 9px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    border: 1px solid;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .closing-status.ok { background: rgba(39,174,96,.09); border-color: rgba(39,174,96,.42); color: var(--ok); }
+  .closing-status.pending { background: rgba(192,57,43,.08); border-color: rgba(192,57,43,.38); color: var(--danger); }
+  .closing-status strong { font-weight: 700; }
+  .missing-list { margin: 8px 0 0 18px; color: var(--text); }
+  .missing-list li { margin: 4px 0; }
+  .closing-edit-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .closing-edit-grid .field { margin-bottom: 10px; }
+  .closing-note { font-size:11px; color:var(--muted); margin:-4px 0 14px; line-height:1.5; }
+  .required-mark { color: var(--danger); font-weight:700; }
+  @media (max-width:700px){ .closing-edit-grid{ grid-template-columns:1fr; } }
+
 </style>
 </head>
 <body>
@@ -932,7 +960,8 @@
     <a href="#secao-06"><span class="section-index-num">06</span><span>Histórico Previdenciário</span></a>
     <a href="#secao-07"><span class="section-index-num">07</span><span>Como funciona o processo</span></a>
     <a href="#secao-08"><span class="section-index-num">08</span><span>Documentação e Acesso Digital</span></a>
-    <a href="#secao-09"><span class="section-index-num">09</span><span>Aviso de Segurança</span></a>
+    <a href="#secao-09"><span class="section-index-num">09</span><span>Conferência de Encerramento</span></a>
+    <a href="#secao-10"><span class="section-index-num">10</span><span>Aviso de Segurança</span></a>
   </nav>
 </aside>
 
@@ -1659,52 +1688,74 @@
     </div>
 
     <!-- GOV.BR -->
-    <div class="field-grid align-labels section7-grid-tight">
-      <div class="field">
-        <label>Possui senha do GOV.BR?</label>
-        <div class="radio-group">
-          <div class="radio-btn"><input type="radio" name="govbr" id="gb1" value="Sim"><label for="gb1">Sim</label></div>
-          <div class="radio-btn"><input type="radio" name="govbr" id="gb2" value="Não"><label for="gb2">Não</label></div>
-        </div>
-      </div>
-      <div class="field side-dual-field" id="govbrSenhaField" style="display:none">
-        <label>Dados de acesso do GOV.BR</label>
-        <div class="field-grid govbr-inline-grid">
-          <div class="field">
-            <label>CPF (login do GOV.BR)</label>
-            <input type="text" id="govbrLogin" placeholder="000.000.000-00" oninput="handleCPFInput(this)">
-          </div>
-          <div class="field">
-            <label>Senha do GOV.BR</label>
-            <div style="display:flex; gap:6px;">
-              <input type="text" id="govbrSenha" placeholder="Senha do GOV.BR" oninput="track(this)" style="flex:1;">
-              <button type="button" class="btn btn-ghost" id="govbrSenhaToggle" onclick="togglePasswordVisibility(this, 'govbrSenha')" style="flex-shrink:0;">Ocultar</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="field compact-side-field" id="govbrMotivoField" style="display:none">
-        <label>Motivo</label>
-        <input type="text" id="govbrMotivo" placeholder="Ex: Não lembra, nunca criou acesso, dificuldade no aplicativo..." oninput="track(this)">
+    <div class="field">
+      <label>Informou senha do GOV.BR?</label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="govbr" id="gb1" value="Sim"><label for="gb1">Sim</label></div>
+        <div class="radio-btn"><input type="radio" name="govbr" id="gb2" value="Não"><label for="gb2">Não</label></div>
       </div>
     </div>
 
-    <div class="field-grid align-labels section7-grid-tight">
+    <div class="field-grid align-labels section7-grid-tight" id="govbrSenhaField" style="display:none">
       <div class="field">
-        <label>Telefone de recado
-          <span class="tip">É um contato alternativo para usarmos caso não consigamos falar com você pelo número principal, especialmente em situações importantes.</span>
+        <label>Senha do GOV.BR</label>
+        <input type="text" id="govbrSenha" placeholder="Senha do GOV.BR" oninput="track(this); updateClosingChecklist()">
+      </div>
+      <div class="field">
+        <label>Resultado do acesso <span class="required-mark">*</span></label>
+        <div class="radio-group">
+          <div class="radio-btn"><input type="radio" name="govAcessoStatus" id="gas1" value="Com Acesso"><label for="gas1">Com Acesso</label></div>
+          <div class="radio-btn"><input type="radio" name="govAcessoStatus" id="gas2" value="Senha incorreta"><label for="gas2">Senha incorreta</label></div>
+          <div class="radio-btn"><input type="radio" name="govAcessoStatus" id="gas3" value="A2F Ativa"><label for="gas3">A2F Ativa</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field compact-side-field" id="govbrMotivoField" style="display:none">
+      <label>Motivo</label>
+      <input type="text" id="govbrMotivo" placeholder="Ex: Não lembra a senha, nunca criou acesso..." oninput="track(this); updateClosingChecklist()">
+    </div>
+
+    <div class="field">
+      <label>Possui contato alternativo? <span class="required-mark">*</span></label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="contatoAlternativoStatus" id="cas1" value="Sim"><label for="cas1">Sim</label></div>
+        <div class="radio-btn"><input type="radio" name="contatoAlternativoStatus" id="cas2" value="Sim, mas não soube informar"><label for="cas2">Sim, mas não soube informar</label></div>
+        <div class="radio-btn"><input type="radio" name="contatoAlternativoStatus" id="cas3" value="Não quer informar"><label for="cas3">Não quer informar</label></div>
+      </div>
+    </div>
+
+    <div class="field-grid align-labels section7-grid-tight" id="contatoAlternativoDados" style="display:none">
+      <div class="field">
+        <label>Telefone de recado <span class="required-mark">*</span>
+          <span class="tip">Contato alternativo para usarmos caso não consigamos falar com o cliente pelo número principal.</span>
         </label>
-        <input type="tel" id="telefone" placeholder="(11) 99999-9999" oninput="handlePhoneInput(this)" onkeydown="focusNextOnEnter(event, 'nomeContatoRecado')">
+        <input type="tel" id="telefone" placeholder="(11) 99999-9999" oninput="handlePhoneInput(this); updateClosingChecklist()" onkeydown="focusNextOnEnter(event, 'nomeContatoRecado')">
       </div>
       <div class="field">
         <label>Nome do contato</label>
-        <input type="text" id="nomeContatoRecado" placeholder="Ex: Maria, esposa, vizinho..." oninput="track(this)">
+        <input type="text" id="nomeContatoRecado" placeholder="Ex: Maria, esposa, vizinho..." oninput="track(this); updateClosingChecklist()">
+      </div>
+    </div>
+
+    <div class="field" id="contatoWhatsappField" style="display:none">
+      <label>Vai encaminhar o contato alternativo no WhatsApp? <span class="required-mark">*</span></label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="contatoWhatsapp" id="caw1" value="Sim"><label for="caw1">Sim</label></div>
+        <div class="radio-btn"><input type="radio" name="contatoWhatsapp" id="caw2" value="Não"><label for="caw2">Não</label></div>
       </div>
     </div>
 
     <div class="field">
+      <label>Melhor horário / rotina para contato <span class="required-mark">*</span>
+        <span class="tip">Registre quando é mais fácil falar com o cliente para facilitar o acompanhamento posterior.</span>
+      </label>
+      <input type="text" id="melhorHorarioContato" placeholder="Ex: Após as 18h; horário de almoço entre 12h e 13h; manhã antes das 10h..." oninput="track(this); updateClosingChecklist()">
+    </div>
+
+    <div class="field">
       <label>Registro em vídeo das limitações?
-        <span class="tip">Precisamos dele para visualizar melhor a sequela e, se for pertinente, utilizá-lo como material de apoio na análise e no processo.</span>
+        <span class="tip">Precisamos dele para visualizar melhor a sequela. Durante a chamada, use a pergunta-chave: <strong>“Você consegue me mostrar os movimentos?”</strong> — isso marca no áudio/vídeo o ponto exato da demonstração.</span>
       </label>
       <div class="radio-group">
         <div class="radio-btn"><input type="radio" name="video" id="vi1" value="Sim, já tem"><label for="vi1">Sim, já tem</label></div>
@@ -1715,15 +1766,109 @@
     </div>
 
     <div class="field">
+      <label>A pergunta-chave foi feita durante a chamada? <span class="required-mark">*</span>
+        <span class="tip">Pergunta padrão: “Você consegue me mostrar os movimentos?”</span>
+      </label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="videoPerguntaFeita" id="vpf1" value="Sim"><label for="vpf1">Sim</label></div>
+        <div class="radio-btn"><input type="radio" name="videoPerguntaFeita" id="vpf2" value="Não"><label for="vpf2">Não</label></div>
+      </div>
+    </div>
+
+    <div class="field">
       <label>Observações adicionais / notas da reunião</label>
       <textarea id="observacoes" placeholder="Informações relevantes não cobertas pelas perguntas anteriores..." oninput="track(this)" style="min-height:100px"></textarea>
     </div>
   </div>
 
-  <!-- SEÇÃO 09: SEGURANÇA -->
+  <!-- SEÇÃO 09: CONFERÊNCIA DE ENCERRAMENTO -->
   <div class="section" id="secao-09">
     <div class="section-header">
       <span class="section-num">09</span>
+      <span class="section-title">Conferência de Encerramento</span>
+    </div>
+
+    <div class="closing-check-card">
+      <div id="closingStatus" class="closing-status pending"></div>
+      <p class="closing-note">Revise os itens abaixo antes de encerrar a chamada. Os campos desta seção editam os mesmos dados registrados acima, sem necessidade de voltar à seção 08.</p>
+
+      <div class="field">
+        <label>Possui senha do GOV.BR?</label>
+        <div class="radio-group">
+          <div class="radio-btn"><input type="radio" name="mirrorGovbr" id="mgb1" value="Sim" onchange="setRadioValue('govbr','Sim'); updateClosingChecklist()"><label for="mgb1">Sim</label></div>
+          <div class="radio-btn"><input type="radio" name="mirrorGovbr" id="mgb2" value="Não" onchange="setRadioValue('govbr','Não'); updateClosingChecklist()"><label for="mgb2">Não</label></div>
+        </div>
+      </div>
+
+      <div class="field-grid" id="mirrorGovDados" style="display:none">
+        <div class="field">
+          <label>Senha do GOV.BR</label>
+          <input type="text" id="mirrorGovSenha" placeholder="Senha do GOV.BR" oninput="syncMirrorToSource('mirrorGovSenha','govbrSenha'); updateClosingChecklist()">
+        </div>
+        <div class="field">
+          <label>Resultado do acesso ao GOV.BR</label>
+          <div class="radio-group">
+            <div class="radio-btn"><input type="radio" name="mirrorGovAcessoStatus" id="mgas1" value="Com Acesso" onchange="setRadioValue('govAcessoStatus','Com Acesso'); updateClosingChecklist()"><label for="mgas1">Com Acesso</label></div>
+            <div class="radio-btn"><input type="radio" name="mirrorGovAcessoStatus" id="mgas2" value="Senha incorreta" onchange="setRadioValue('govAcessoStatus','Senha incorreta'); updateClosingChecklist()"><label for="mgas2">Senha incorreta</label></div>
+            <div class="radio-btn"><input type="radio" name="mirrorGovAcessoStatus" id="mgas3" value="A2F Ativa" onchange="setRadioValue('govAcessoStatus','A2F Ativa'); updateClosingChecklist()"><label for="mgas3">A2F Ativa</label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field" id="mirrorGovMotivoField" style="display:none">
+        <label>Motivo</label>
+        <input type="text" id="mirrorGovMotivo" placeholder="Ex: Não lembra a senha, nunca criou acesso..." oninput="syncMirrorToSource('mirrorGovMotivo','govbrMotivo'); updateClosingChecklist()">
+      </div>
+
+      <div class="field">
+        <label>Possui contato alternativo?</label>
+        <div class="radio-group">
+          <div class="radio-btn"><input type="radio" name="mirrorContatoStatus" id="mcs1" value="Sim" onchange="setRadioValue('contatoAlternativoStatus','Sim'); updateClosingChecklist()"><label for="mcs1">Sim</label></div>
+          <div class="radio-btn"><input type="radio" name="mirrorContatoStatus" id="mcs2" value="Sim, mas não soube informar" onchange="setRadioValue('contatoAlternativoStatus','Sim, mas não soube informar'); updateClosingChecklist()"><label for="mcs2">Sim, não soube informar</label></div>
+          <div class="radio-btn"><input type="radio" name="mirrorContatoStatus" id="mcs3" value="Não quer informar" onchange="setRadioValue('contatoAlternativoStatus','Não quer informar'); updateClosingChecklist()"><label for="mcs3">Não quer informar</label></div>
+        </div>
+      </div>
+
+      <div class="field-grid" id="mirrorContatoDados" style="display:none">
+        <div class="field">
+          <label>Telefone de recado</label>
+          <input type="tel" id="mirrorTelefone" placeholder="(11) 99999-9999" oninput="handleMirrorPhoneInput(this); updateClosingChecklist()">
+        </div>
+        <div class="field">
+          <label>Nome do contato</label>
+          <input type="text" id="mirrorNomeContato" placeholder="Nome / relação..." oninput="syncMirrorToSource('mirrorNomeContato','nomeContatoRecado'); updateClosingChecklist()">
+        </div>
+      </div>
+
+      <div class="field" id="mirrorContatoWhatsappField" style="display:none">
+        <label>Vai encaminhar o contato alternativo pelo WhatsApp?</label>
+        <div class="radio-group">
+          <div class="radio-btn"><input type="radio" name="mirrorContatoWhatsapp" id="mcw1" value="Sim" onchange="setRadioValue('contatoWhatsapp','Sim'); updateClosingChecklist()"><label for="mcw1">Sim</label></div>
+          <div class="radio-btn"><input type="radio" name="mirrorContatoWhatsapp" id="mcw2" value="Não" onchange="setRadioValue('contatoWhatsapp','Não'); updateClosingChecklist()"><label for="mcw2">Não</label></div>
+        </div>
+      </div>
+
+      <div class="field-grid" style="align-items:start">
+        <div class="field">
+          <label>Melhor horário / rotina para contato</label>
+          <input type="text" id="mirrorMelhorHorario" placeholder="Melhor período para contato..." oninput="syncMirrorToSource('mirrorMelhorHorario','melhorHorarioContato'); updateClosingChecklist()">
+        </div>
+        <div class="field">
+          <label>Confirmação — pergunta-chave do vídeo</label>
+          <div class="radio-group">
+            <div class="radio-btn"><input type="radio" name="mirrorVideoPergunta" id="mvp1" value="Sim" onchange="setRadioValue('videoPerguntaFeita','Sim'); updateClosingChecklist()"><label for="mvp1">Sim, foi feita</label></div>
+            <div class="radio-btn"><input type="radio" name="mirrorVideoPergunta" id="mvp2" value="Não" onchange="setRadioValue('videoPerguntaFeita','Não'); updateClosingChecklist()"><label for="mvp2">Não</label></div>
+          </div>
+          <span class="tip">“Você consegue me mostrar os movimentos?”</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 10: SEGURANÇA -->
+  <div class="section" id="secao-10">
+    <div class="section-header">
+      <span class="section-num">10</span>
       <span class="section-title">Aviso de Segurança</span>
     </div>
 
@@ -2132,20 +2277,131 @@
         const sel = document.querySelector('input[name="govbr"]:checked');
         const isSim = sel && sel.value === 'Sim';
         const isNao = sel && sel.value === 'Não';
-        document.getElementById('govbrSenhaField').style.display = isSim ? 'block' : 'none';
+        document.getElementById('govbrSenhaField').style.display = isSim ? 'grid' : 'none';
         document.getElementById('govbrMotivoField').style.display = isNao ? 'block' : 'none';
         if (!isSim) {
-          document.getElementById('govbrLogin').value = '';
           document.getElementById('govbrSenha').value = '';
+          document.querySelectorAll('input[name="govAcessoStatus"]').forEach(el => el.checked = false);
         }
-        if (!isNao) {
-          document.getElementById('govbrMotivo').value = '';
+        if (!isNao) document.getElementById('govbrMotivo').value = '';
+      }
+
+      if (name === 'contatoAlternativoStatus') {
+        const sel = document.querySelector('input[name="contatoAlternativoStatus"]:checked');
+        const informado = sel && sel.value === 'Sim';
+        const depois = sel && sel.value === 'Sim, mas não soube informar';
+        const dados = document.getElementById('contatoAlternativoDados');
+        const whats = document.getElementById('contatoWhatsappField');
+        if (dados) dados.style.display = informado ? 'grid' : 'none';
+        if (whats) whats.style.display = depois ? 'block' : 'none';
+        if (!informado) {
+          document.getElementById('telefone').value = '';
+          document.getElementById('nomeContatoRecado').value = '';
         }
+        if (!depois) document.querySelectorAll('input[name="contatoWhatsapp"]').forEach(el => el.checked = false);
+      }
+
+      if (['govbr','govAcessoStatus','contatoAlternativoStatus','contatoWhatsapp','videoPerguntaFeita','video'].includes(name)) {
+        syncClosingMirrors();
+        updateClosingChecklist();
       }
 
       updateProgress();
     });
   });
+
+  /* =========================================================
+     CONFERÊNCIA DE ENCERRAMENTO
+  ========================================================= */
+  function syncMirrorToSource(mirrorId, sourceId) {
+    const mirror = document.getElementById(mirrorId);
+    const source = document.getElementById(sourceId);
+    if (!mirror || !source) return;
+    source.value = mirror.value;
+    track(source);
+  }
+
+  function handleMirrorPhoneInput(el) {
+    el.value = formatPhone(el.value);
+    const source = document.getElementById('telefone');
+    if (source) { source.value = el.value; track(source); }
+  }
+
+  function setRadioValue(name, value) {
+    const target = [...document.querySelectorAll(`input[name="${name}"]`)].find(el => el.value === value);
+    if (!target) return;
+    target.checked = true;
+    target.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function syncClosingMirrors() {
+    const pairs = [
+      ['govbrSenha','mirrorGovSenha'],
+      ['govbrMotivo','mirrorGovMotivo'],
+      ['telefone','mirrorTelefone'],
+      ['nomeContatoRecado','mirrorNomeContato'],
+      ['melhorHorarioContato','mirrorMelhorHorario']
+    ];
+    pairs.forEach(([sourceId, mirrorId]) => {
+      const source = document.getElementById(sourceId);
+      const mirror = document.getElementById(mirrorId);
+      if (source && mirror && mirror !== document.activeElement) mirror.value = source.value;
+    });
+    const govTemSenha = r('govbr');
+    document.querySelectorAll('input[name="mirrorGovbr"]').forEach(el => el.checked = el.value === govTemSenha);
+    const mirrorGovDados = document.getElementById('mirrorGovDados');
+    const mirrorGovMotivoField = document.getElementById('mirrorGovMotivoField');
+    if (mirrorGovDados) mirrorGovDados.style.display = govTemSenha === 'Sim' ? 'grid' : 'none';
+    if (mirrorGovMotivoField) mirrorGovMotivoField.style.display = govTemSenha === 'Não' ? 'block' : 'none';
+
+    const contatoStatus = r('contatoAlternativoStatus');
+    document.querySelectorAll('input[name="mirrorContatoStatus"]').forEach(el => el.checked = el.value === contatoStatus);
+    const mirrorContatoDados = document.getElementById('mirrorContatoDados');
+    const mirrorContatoWhatsappField = document.getElementById('mirrorContatoWhatsappField');
+    if (mirrorContatoDados) mirrorContatoDados.style.display = contatoStatus === 'Sim' ? 'grid' : 'none';
+    if (mirrorContatoWhatsappField) mirrorContatoWhatsappField.style.display = contatoStatus === 'Sim, mas não soube informar' ? 'block' : 'none';
+    const govAcesso = r('govAcessoStatus');
+    document.querySelectorAll('input[name="mirrorGovAcessoStatus"]').forEach(el => el.checked = el.value === govAcesso);
+    const contatoWhats = r('contatoWhatsapp');
+    document.querySelectorAll('input[name="mirrorContatoWhatsapp"]').forEach(el => el.checked = el.value === contatoWhats);
+    const videoVal = r('videoPerguntaFeita');
+    document.querySelectorAll('input[name="mirrorVideoPergunta"]').forEach(el => el.checked = el.value === videoVal);
+  }
+
+  function getClosingMissingItems() {
+    const missing = [];
+    const govTemSenha = r('govbr');
+    if (!govTemSenha) missing.push('Informar se o cliente possui senha do GOV.BR.');
+    if (govTemSenha === 'Sim') {
+      if (!v('govbrSenha')) missing.push('Registrar a senha do GOV.BR.');
+      if (!r('govAcessoStatus')) missing.push('Registrar o resultado do acesso ao GOV.BR.');
+    }
+    if (govTemSenha === 'Não' && !v('govbrMotivo')) missing.push('Informar o motivo de o cliente não possuir/não saber a senha do GOV.BR.');
+
+    const contatoStatus = r('contatoAlternativoStatus');
+    if (!contatoStatus) missing.push('Informar se o cliente possui contato alternativo.');
+    if (contatoStatus === 'Sim' && !v('telefone')) missing.push('Registrar o telefone do contato alternativo.');
+    if (contatoStatus === 'Sim, mas não soube informar' && !r('contatoWhatsapp')) missing.push('Informar se o cliente vai encaminhar o contato alternativo pelo WhatsApp.');
+
+    if (!v('melhorHorarioContato')) missing.push('Registrar o melhor horário/rotina do cliente para contato.');
+    if (r('videoPerguntaFeita') !== 'Sim') missing.push('Confirmar que foi feita a pergunta-chave do vídeo: “Você consegue me mostrar os movimentos?”.');
+    if (!r('video')) missing.push('Registrar o status do vídeo das limitações.');
+    return missing;
+  }
+
+  function updateClosingChecklist() {
+    syncClosingMirrors();
+    const box = document.getElementById('closingStatus');
+    if (!box) return;
+    const missing = getClosingMissingItems();
+    if (!missing.length) {
+      box.className = 'closing-status ok';
+      box.innerHTML = '<strong>✓ Conferência concluída</strong><br>Todos os dados essenciais para o fechamento da reunião foram registrados.';
+    } else {
+      box.className = 'closing-status pending';
+      box.innerHTML = `<strong>⚠ Campos pendentes (${missing.length})</strong><ul class="missing-list">${missing.map(item => `<li>${item}</li>`).join('')}</ul>`;
+    }
+  }
 
   /* =========================================================
      PROGRESSO — calculado dinamicamente a partir dos campos
@@ -2215,7 +2471,7 @@
       'medicacaoDetalheField', 'compEnderecoDetalheField', 'compEnderecoWhatsappField',
       'docFotoWhatsappField', 'cirurgiaDetail', 'fisioDetalheField',
       'tempoApoioGessoField', 'tempoApoioTipoiaField', 'tempoApoioMuletasField', 'tempoApoioCadeiraField',
-      'govbrSenhaField', 'govbrMotivoField', 'ctpsWhatsappField',
+      'govbrSenhaField', 'govbrMotivoField', 'contatoAlternativoDados', 'contatoWhatsappField', 'ctpsWhatsappField',
       'cirurgiaDetail_2', 'fisioDetalheField_2',
       'tempoApoioGessoField_2', 'tempoApoioTipoiaField_2', 'tempoApoioMuletasField_2', 'tempoApoioCadeiraField_2',
       'segundoAcidenteSec2', 'segundoAcidenteSec3'
@@ -2224,12 +2480,9 @@
       if (el) el.style.display = 'none';
     });
 
-    const govbrSenhaInput = document.getElementById('govbrSenha');
-    if (govbrSenhaInput) govbrSenhaInput.type = 'text';
-    const govbrToggleBtn = document.getElementById('govbrSenhaToggle');
-    if (govbrToggleBtn) govbrToggleBtn.textContent = 'Ocultar';
-
     updateProgress();
+    syncClosingMirrors();
+    updateClosingChecklist();
     showToast('Formulário limpo');
 
     // Após limpar o formulário, retorna automaticamente ao topo da página.
@@ -2245,7 +2498,6 @@
   ========================================================= */
   const fieldDefs = [
     { label: 'Nome completo', get: () => v('nome') },
-    { label: 'Telefone de recado', get: () => [v('telefone'), v('nomeContatoRecado')].filter(Boolean).join(' — ') },
     { label: 'Idade', get: () => v('idade') ? v('idade') + ' anos' : '' },
     { label: 'Escolaridade', get: () => v('escolaridade') },
     { label: 'Data do acidente', get: () => formatDateBR(v('dataAcidente')) },
@@ -2309,20 +2561,33 @@
     { label: 'GOV.BR', get: () => {
         const sel = r('govbr');
         if (sel === 'Sim') {
+          const status = r('govAcessoStatus');
+          const statusResumo = status === 'A2F Ativa' ? 'Verificação de duas etapas ativa' : status;
           const parts = [];
-          const login = v('govbrLogin');
-          const senha = v('govbrSenha');
-          if (login) parts.push(`CPF: ${login}`);
-          if (senha) parts.push(`Senha: ${senha}`);
+          if (v('govbrSenha')) parts.push(`Senha: ${v('govbrSenha')}`);
+          if (statusResumo) parts.push(`Resultado: ${statusResumo}`);
           return `Sim${parts.length ? ' — ' + parts.join(' — ') : ''}`;
         }
-        if (sel === 'Não') {
-          return `Não${v('govbrMotivo') ? ' — Motivo: ' + v('govbrMotivo') : ''}`;
-        }
+        if (sel === 'Não') return `Não${v('govbrMotivo') ? ' — Motivo: ' + v('govbrMotivo') : ''}`;
         return sel;
       }
     },
+    { label: 'Contato alternativo', get: () => {
+        const status = r('contatoAlternativoStatus');
+        if (status === 'Sim') {
+          const dados = [v('telefone'), v('nomeContatoRecado')].filter(Boolean).join(' — ');
+          return `Informado${dados ? ' — ' + dados : ''}`;
+        }
+        if (status === 'Sim, mas não soube informar') {
+          return `Não informado no momento${r('contatoWhatsapp') ? ' — Vai encaminhar no WhatsApp: ' + r('contatoWhatsapp') : ''}`;
+        }
+        if (status === 'Não quer informar') return 'Não quer informar';
+        return '';
+      }
+    },
+    { label: 'Melhor horário / rotina para contato', get: () => v('melhorHorarioContato') },
     { label: 'Vídeo das limitações', get: () => r('video') },
+    { label: 'Pergunta-chave do vídeo realizada', get: () => r('videoPerguntaFeita') },
     { label: 'Observações', get: () => v('observacoes') },
   ];
 
@@ -2405,13 +2670,20 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
+  // Mantém a conferência sincronizada quando os campos originais são editados.
+  ['govbrSenha','govbrMotivo','telefone','nomeContatoRecado','melhorHorarioContato'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => { syncClosingMirrors(); updateClosingChecklist(); });
+  });
+
   /* =========================================================
      INICIALIZAÇÃO
   ========================================================= */
   document.querySelectorAll('#telefone').forEach(el => { el.value = formatPhone(el.value); });
-  document.querySelectorAll('#govbrLogin').forEach(el => { el.value = formatCPF(el.value); });
 
   applyTheme(getPreferredTheme());
+  syncClosingMirrors();
+  updateClosingChecklist();
   updateProgress();
 </script>
 </body>
