@@ -375,7 +375,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     width: 90%;
-    max-width: 700px;
+    max-width: 900px;
     max-height: 85vh;
     overflow-y: auto;
     padding: 28px 32px;
@@ -910,6 +910,24 @@
   .closing-status.ok { background: rgba(39,174,96,.09); border-color: rgba(39,174,96,.42); color: var(--ok); }
   .closing-status.pending { background: rgba(192,57,43,.08); border-color: rgba(192,57,43,.38); color: var(--danger); }
   .closing-status strong { font-weight: 700; }
+  .summary-closing-wrap {
+    margin-bottom: 24px;
+  }
+
+  .summary-closing-wrap .closing-check-card {
+    margin-top: 10px;
+  }
+
+  .summary-closing-divider {
+    margin: 24px 0 18px;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .summary-closing-wrap .field {
+    margin-bottom: 14px;
+  }
+
   .missing-list { margin: 8px 0 0 18px; color: var(--text); }
   .missing-list li { margin: 4px 0; }
   .closing-edit-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -1689,7 +1707,7 @@
 
     <!-- GOV.BR -->
     <div class="field">
-      <label>Informou senha do GOV.BR?</label>
+      <label>Possui senha do GOV.BR?</label>
       <div class="radio-group">
         <div class="radio-btn"><input type="radio" name="govbr" id="gb1" value="Sim"><label for="gb1">Sim</label></div>
         <div class="radio-btn"><input type="radio" name="govbr" id="gb2" value="Não"><label for="gb2">Não</label></div>
@@ -2304,6 +2322,8 @@
       if (['govbr','govAcessoStatus','contatoAlternativoStatus','contatoWhatsapp','videoPerguntaFeita','video'].includes(name)) {
         syncClosingMirrors();
         updateClosingChecklist();
+        syncModalClosingEditor();
+        updateModalClosingStatus();
       }
 
       updateProgress();
@@ -2642,13 +2662,169 @@
     return `${title}\n${lines.join('\n')}`;
   }
 
+  function renderSummaryClosingEditor() {
+    return `
+      <div class="summary-closing-wrap">
+        <div class="summary-group-title">Conferência de Encerramento</div>
+        <div class="closing-check-card">
+          <div id="modalClosingStatus" class="closing-status pending"></div>
+          <p class="closing-note">Você pode corrigir os dados diretamente aqui. As alterações são sincronizadas automaticamente com o formulário.</p>
+
+          <div class="field">
+            <label>Possui senha do GOV.BR?</label>
+            <div class="radio-group">
+              <div class="radio-btn"><input type="radio" name="modalGovbr" id="modalGov1" value="Sim" onchange="setRadioValue('govbr','Sim'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalGov1">Sim</label></div>
+              <div class="radio-btn"><input type="radio" name="modalGovbr" id="modalGov2" value="Não" onchange="setRadioValue('govbr','Não'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalGov2">Não</label></div>
+            </div>
+          </div>
+
+          <div class="field-grid" id="modalGovDados" style="display:none">
+            <div class="field">
+              <label>Senha do GOV.BR</label>
+              <input type="text" id="modalGovSenha" placeholder="Senha do GOV.BR" oninput="syncModalTextToSource('modalGovSenha','govbrSenha'); updateModalClosingStatus()">
+            </div>
+            <div class="field">
+              <label>Resultado do acesso ao GOV.BR</label>
+              <div class="radio-group">
+                <div class="radio-btn"><input type="radio" name="modalGovAcessoStatus" id="modalGas1" value="Com Acesso" onchange="setRadioValue('govAcessoStatus','Com Acesso'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalGas1">Com Acesso</label></div>
+                <div class="radio-btn"><input type="radio" name="modalGovAcessoStatus" id="modalGas2" value="Senha incorreta" onchange="setRadioValue('govAcessoStatus','Senha incorreta'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalGas2">Senha incorreta</label></div>
+                <div class="radio-btn"><input type="radio" name="modalGovAcessoStatus" id="modalGas3" value="A2F Ativa" onchange="setRadioValue('govAcessoStatus','A2F Ativa'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalGas3">A2F Ativa</label></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field" id="modalGovMotivoField" style="display:none">
+            <label>Motivo</label>
+            <input type="text" id="modalGovMotivo" placeholder="Ex: Não lembra a senha, nunca criou acesso..." oninput="syncModalTextToSource('modalGovMotivo','govbrMotivo'); updateModalClosingStatus()">
+          </div>
+
+          <div class="field">
+            <label>Possui contato alternativo?</label>
+            <div class="radio-group">
+              <div class="radio-btn"><input type="radio" name="modalContatoStatus" id="modalCs1" value="Sim" onchange="setRadioValue('contatoAlternativoStatus','Sim'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalCs1">Sim</label></div>
+              <div class="radio-btn"><input type="radio" name="modalContatoStatus" id="modalCs2" value="Sim, mas não soube informar" onchange="setRadioValue('contatoAlternativoStatus','Sim, mas não soube informar'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalCs2">Sim, não soube informar</label></div>
+              <div class="radio-btn"><input type="radio" name="modalContatoStatus" id="modalCs3" value="Não quer informar" onchange="setRadioValue('contatoAlternativoStatus','Não quer informar'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalCs3">Não quer informar</label></div>
+            </div>
+          </div>
+
+          <div class="field-grid" id="modalContatoDados" style="display:none">
+            <div class="field">
+              <label>Telefone de recado</label>
+              <input type="tel" id="modalTelefone" placeholder="(11) 99999-9999" oninput="handleModalPhoneInput(this); updateModalClosingStatus()">
+            </div>
+            <div class="field">
+              <label>Nome do contato</label>
+              <input type="text" id="modalNomeContato" placeholder="Nome / relação..." oninput="syncModalTextToSource('modalNomeContato','nomeContatoRecado'); updateModalClosingStatus()">
+            </div>
+          </div>
+
+          <div class="field" id="modalContatoWhatsappField" style="display:none">
+            <label>Vai encaminhar o contato alternativo pelo WhatsApp?</label>
+            <div class="radio-group">
+              <div class="radio-btn"><input type="radio" name="modalContatoWhatsapp" id="modalCw1" value="Sim" onchange="setRadioValue('contatoWhatsapp','Sim'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalCw1">Sim</label></div>
+              <div class="radio-btn"><input type="radio" name="modalContatoWhatsapp" id="modalCw2" value="Não" onchange="setRadioValue('contatoWhatsapp','Não'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalCw2">Não</label></div>
+            </div>
+          </div>
+
+          <div class="field-grid" style="align-items:start">
+            <div class="field">
+              <label>Melhor horário / rotina para contato</label>
+              <input type="text" id="modalMelhorHorario" placeholder="Melhor período para contato..." oninput="syncModalTextToSource('modalMelhorHorario','melhorHorarioContato'); updateModalClosingStatus()">
+            </div>
+            <div class="field">
+              <label>Confirmação — pergunta-chave do vídeo</label>
+              <div class="radio-group">
+                <div class="radio-btn"><input type="radio" name="modalVideoPergunta" id="modalVp1" value="Sim" onchange="setRadioValue('videoPerguntaFeita','Sim'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalVp1">Sim, foi feita</label></div>
+                <div class="radio-btn"><input type="radio" name="modalVideoPergunta" id="modalVp2" value="Não" onchange="setRadioValue('videoPerguntaFeita','Não'); syncModalClosingEditor(); updateModalClosingStatus()"><label for="modalVp2">Não</label></div>
+              </div>
+              <span class="tip">“Você consegue me mostrar os movimentos?”</span>
+            </div>
+          </div>
+        </div>
+        <hr class="summary-closing-divider">
+      </div>`;
+  }
+
+  function syncModalTextToSource(modalId, sourceId) {
+    const modal = document.getElementById(modalId);
+    const source = document.getElementById(sourceId);
+    if (!modal || !source) return;
+    source.value = modal.value;
+    track(source);
+    syncClosingMirrors();
+  }
+
+  function handleModalPhoneInput(el) {
+    el.value = formatPhone(el.value);
+    const source = document.getElementById('telefone');
+    if (source) { source.value = el.value; track(source); }
+    syncClosingMirrors();
+  }
+
+  function syncModalClosingEditor() {
+    if (!document.getElementById('modalClosingStatus')) return;
+
+    const pairs = [
+      ['govbrSenha','modalGovSenha'],
+      ['govbrMotivo','modalGovMotivo'],
+      ['telefone','modalTelefone'],
+      ['nomeContatoRecado','modalNomeContato'],
+      ['melhorHorarioContato','modalMelhorHorario']
+    ];
+    pairs.forEach(([sourceId, modalId]) => {
+      const source = document.getElementById(sourceId);
+      const modal = document.getElementById(modalId);
+      if (source && modal && modal !== document.activeElement) modal.value = source.value;
+    });
+
+    const govTemSenha = r('govbr');
+    document.querySelectorAll('input[name="modalGovbr"]').forEach(el => el.checked = el.value === govTemSenha);
+    const modalGovDados = document.getElementById('modalGovDados');
+    const modalGovMotivoField = document.getElementById('modalGovMotivoField');
+    if (modalGovDados) modalGovDados.style.display = govTemSenha === 'Sim' ? 'grid' : 'none';
+    if (modalGovMotivoField) modalGovMotivoField.style.display = govTemSenha === 'Não' ? 'block' : 'none';
+
+    const govAcesso = r('govAcessoStatus');
+    document.querySelectorAll('input[name="modalGovAcessoStatus"]').forEach(el => el.checked = el.value === govAcesso);
+
+    const contatoStatus = r('contatoAlternativoStatus');
+    document.querySelectorAll('input[name="modalContatoStatus"]').forEach(el => el.checked = el.value === contatoStatus);
+    const modalContatoDados = document.getElementById('modalContatoDados');
+    const modalContatoWhatsappField = document.getElementById('modalContatoWhatsappField');
+    if (modalContatoDados) modalContatoDados.style.display = contatoStatus === 'Sim' ? 'grid' : 'none';
+    if (modalContatoWhatsappField) modalContatoWhatsappField.style.display = contatoStatus === 'Sim, mas não soube informar' ? 'block' : 'none';
+
+    const contatoWhats = r('contatoWhatsapp');
+    document.querySelectorAll('input[name="modalContatoWhatsapp"]').forEach(el => el.checked = el.value === contatoWhats);
+
+    const videoVal = r('videoPerguntaFeita');
+    document.querySelectorAll('input[name="modalVideoPergunta"]').forEach(el => el.checked = el.value === videoVal);
+  }
+
+  function updateModalClosingStatus() {
+    const box = document.getElementById('modalClosingStatus');
+    if (!box) return;
+    const missing = getClosingMissingItems();
+    if (!missing.length) {
+      box.className = 'closing-status ok';
+      box.innerHTML = '<strong>✓ Conferência concluída</strong><br>Todos os dados essenciais para o fechamento da reunião foram registrados.';
+    } else {
+      box.className = 'closing-status pending';
+      box.innerHTML = `<strong>⚠ Campos pendentes (${missing.length})</strong><ul class="missing-list">${missing.map(item => `<li>${item}</li>`).join('')}</ul>`;
+    }
+  }
+
   function openSummary() {
+    updateClosingChecklist();
     const container = document.getElementById('summaryContent');
-    let html = `<div class="summary-group-title">Triagem principal</div>${renderSummaryItems(fieldDefs)}`;
+    let html = renderSummaryClosingEditor();
+    html += `<div class="summary-group-title">Triagem principal</div>${renderSummaryItems(fieldDefs)}`;
     if (r('temSegundoAcidente') === 'Sim' && hasAnyValue(fieldDefsSecondAccident)) {
       html += `<div class="summary-group-title">Acidente 2</div>${renderSummaryItems(fieldDefsSecondAccident)}`;
     }
     container.innerHTML = html;
+    syncModalClosingEditor();
+    updateModalClosingStatus();
     document.getElementById('summaryOverlay').classList.add('open');
   }
 
@@ -2673,7 +2849,12 @@
   // Mantém a conferência sincronizada quando os campos originais são editados.
   ['govbrSenha','govbrMotivo','telefone','nomeContatoRecado','melhorHorarioContato'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.addEventListener('input', () => { syncClosingMirrors(); updateClosingChecklist(); });
+    if (el) el.addEventListener('input', () => {
+      syncClosingMirrors();
+      updateClosingChecklist();
+      syncModalClosingEditor();
+      updateModalClosingStatus();
+    });
   });
 
   /* =========================================================
