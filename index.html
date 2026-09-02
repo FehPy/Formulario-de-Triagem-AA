@@ -891,6 +891,45 @@
   }
 
 
+  /* GOV.BR — PERGUNTAS DE APOIO PARA RECUPERAÇÃO */
+  .gov-recovery-wrap {
+    display: none;
+    margin: 4px 0 18px;
+    padding: 16px 18px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--surface2) 72%, transparent);
+  }
+
+  .gov-recovery-wrap.open { display: block; }
+
+  .gov-recovery-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+
+  .gov-recovery-note {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .gov-recovery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 16px;
+  }
+
+  .gov-recovery-grid .field { margin-bottom: 12px; }
+
+  @media (max-width: 700px) {
+    .gov-recovery-grid { grid-template-columns: 1fr; }
+  }
+
+
   /* CONFERÊNCIA DE ENCERRAMENTO */
   .closing-check-card {
     border: 1px solid var(--border);
@@ -1731,7 +1770,51 @@
 
     <div class="field compact-side-field" id="govbrMotivoField" style="display:none">
       <label>Motivo</label>
-      <input type="text" id="govbrMotivo" placeholder="Ex: Não lembra a senha, nunca criou acesso..." oninput="track(this); updateClosingChecklist()">
+      <input type="text" id="govbrMotivo" placeholder="Ex: Não lembra a senha, nunca criou acesso..." oninput="track(this); updateGovRecoveryVisibility(); updateClosingChecklist()">
+    </div>
+
+    <div class="gov-recovery-wrap" id="govRecoveryQuestions">
+      <div class="gov-recovery-title">Perguntas de apoio para recuperação do GOV.BR</div>
+      <div class="gov-recovery-note">Registre a resposta informada pelo cliente. As alternativas exibidas pelo INSS variam conforme o histórico da pessoa, então não é necessário reproduzir todas as opções da tela.</div>
+
+      <div class="gov-recovery-grid">
+        <div class="field">
+          <label>Qual o ano da sua última contribuição para a Previdência Social?</label>
+          <input type="text" id="govRecUltimaContribuicaoAno" placeholder="Ex: 2026 / nunca contribuiu" oninput="track(this)">
+        </div>
+
+        <div class="field">
+          <label>Sua última contribuição para a Previdência Social foi sobre qual salário?</label>
+          <select id="govRecUltimaContribuicaoSalario" onchange="track(this)">
+            <option value="">Selecionar faixa...</option>
+            <option value="Até R$ 1.000,00">Até R$ 1.000,00</option>
+            <option value="Entre R$ 1.001,00 e R$ 2.500,00">Entre R$ 1.001,00 e R$ 2.500,00</option>
+            <option value="Entre R$ 2.501,00 e R$ 4.500,00">Entre R$ 2.501,00 e R$ 4.500,00</option>
+            <option value="Acima de R$ 4.500,00">Acima de R$ 4.500,00</option>
+            <option value="Nunca contribuiu para a Previdência Social">Nunca contribuiu para a Previdência Social</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Quando ocorreu sua última contribuição por carnê ou GPS nos últimos 5 anos?</label>
+          <input type="text" id="govRecGpsUltimos5Anos" placeholder="Ex: 2025 / não contribuiu por carnê ou GPS" oninput="track(this)">
+        </div>
+
+        <div class="field">
+          <label>Em qual das empresas apresentadas você já trabalhou?</label>
+          <input type="text" id="govRecEmpresa" placeholder="Ex: Empresa X / não trabalhou nas empresas citadas" oninput="track(this)">
+        </div>
+
+        <div class="field">
+          <label>Em que ano você foi contratado em seu emprego atual (ou no último) com carteira assinada?</label>
+          <input type="text" id="govRecAnoAdmissao" placeholder="Ex: 2016 / nunca teve emprego com carteira assinada" oninput="track(this)">
+        </div>
+
+        <div class="field">
+          <label>Você recebeu algum benefício do INSS nos últimos 5 anos?</label>
+          <input type="text" id="govRecBeneficioUltimos5Anos" placeholder="Ex: Auxílio-doença em 2024 / não recebeu" oninput="track(this)">
+        </div>
+      </div>
     </div>
 
     <div class="field">
@@ -2180,6 +2263,27 @@
   });
 
   /* =========================================================
+     GOV.BR — PERGUNTAS DE APOIO PARA RECUPERAÇÃO
+  ========================================================= */
+  function govRecoveryNeeded() {
+    const govTemSenha = r('govbr');
+    const status = r('govAcessoStatus');
+
+    // Se a senha informada estiver incorreta, ou se o cliente não informou
+    // a senha, disponibiliza as perguntas auxiliares de recuperação.
+    return status === 'Senha incorreta' || govTemSenha === 'Não';
+  }
+
+  function updateGovRecoveryVisibility() {
+    const wrap = document.getElementById('govRecoveryQuestions');
+    if (!wrap) return;
+    const show = govRecoveryNeeded();
+    wrap.style.display = show ? 'block' : 'none';
+    wrap.classList.toggle('open', show);
+  }
+
+
+  /* =========================================================
      RADIOS: lógica condicional por grupo
   ========================================================= */
   document.querySelectorAll('input[type=radio]').forEach(radioEl => {
@@ -2320,6 +2424,7 @@
       }
 
       if (['govbr','govAcessoStatus','contatoAlternativoStatus','contatoWhatsapp','videoPerguntaFeita','video'].includes(name)) {
+        if (name === 'govbr' || name === 'govAcessoStatus') updateGovRecoveryVisibility();
         syncClosingMirrors();
         updateClosingChecklist();
         syncModalClosingEditor();
@@ -2491,7 +2596,7 @@
       'medicacaoDetalheField', 'compEnderecoDetalheField', 'compEnderecoWhatsappField',
       'docFotoWhatsappField', 'cirurgiaDetail', 'fisioDetalheField',
       'tempoApoioGessoField', 'tempoApoioTipoiaField', 'tempoApoioMuletasField', 'tempoApoioCadeiraField',
-      'govbrSenhaField', 'govbrMotivoField', 'contatoAlternativoDados', 'contatoWhatsappField', 'ctpsWhatsappField',
+      'govbrSenhaField', 'govbrMotivoField', 'govRecoveryQuestions', 'contatoAlternativoDados', 'contatoWhatsappField', 'ctpsWhatsappField',
       'cirurgiaDetail_2', 'fisioDetalheField_2',
       'tempoApoioGessoField_2', 'tempoApoioTipoiaField_2', 'tempoApoioMuletasField_2', 'tempoApoioCadeiraField_2',
       'segundoAcidenteSec2', 'segundoAcidenteSec3'
@@ -2592,6 +2697,12 @@
         return sel;
       }
     },
+    { label: 'Recuperação GOV.BR — Ano da última contribuição', get: () => v('govRecUltimaContribuicaoAno'), hideIfEmpty: true },
+    { label: 'Recuperação GOV.BR — Faixa salarial da última contribuição', get: () => v('govRecUltimaContribuicaoSalario'), hideIfEmpty: true },
+    { label: 'Recuperação GOV.BR — Última contribuição por carnê/GPS', get: () => v('govRecGpsUltimos5Anos'), hideIfEmpty: true },
+    { label: 'Recuperação GOV.BR — Empresa reconhecida', get: () => v('govRecEmpresa'), hideIfEmpty: true },
+    { label: 'Recuperação GOV.BR — Ano de admissão no emprego atual/último', get: () => v('govRecAnoAdmissao'), hideIfEmpty: true },
+    { label: 'Recuperação GOV.BR — Benefício do INSS nos últimos 5 anos', get: () => v('govRecBeneficioUltimos5Anos'), hideIfEmpty: true },
     { label: 'Contato alternativo', get: () => {
         const status = r('contatoAlternativoStatus');
         if (status === 'Sim') {
@@ -2646,6 +2757,7 @@
   function renderSummaryItems(defs) {
     return defs.map(f => {
       const val = f.get();
+      if (f.hideIfEmpty && !val) return '';
       return `<div class="summary-item">
         <div class="summary-label">${f.label}</div>
         <div class="summary-value ${!val ? 'empty' : ''}">${val || '—'}</div>
@@ -2863,6 +2975,7 @@
   document.querySelectorAll('#telefone').forEach(el => { el.value = formatPhone(el.value); });
 
   applyTheme(getPreferredTheme());
+  updateGovRecoveryVisibility();
   syncClosingMirrors();
   updateClosingChecklist();
   updateProgress();
