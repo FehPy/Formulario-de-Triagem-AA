@@ -609,7 +609,7 @@
 
 
 
-  /* PROVA SOCIAL — LINKS INSTITUCIONAIS */
+  /* PROVA DE VIDA — LINKS INSTITUCIONAIS */
   .prova-vida-links {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1071,6 +1071,7 @@
       <span class="theme-icon" id="themeIcon">🌙</span>
       <span class="theme-label" id="themeLabel">Tema escuro</span>
     </button>
+    <button class="btn btn-ghost" type="button" onclick="openLastSummary()" title="Ver o resumo da reunião anterior nesta aba">Último Resumo</button>
     <button class="btn btn-ghost" onclick="clearAll()">Limpar</button>
     <button class="btn btn-primary" onclick="openSummary()">Ver Resumo</button>
   </div>
@@ -1089,7 +1090,7 @@
     <a href="#secao-07"><span class="section-index-num">07</span><span>Como funciona o processo</span></a>
     <a href="#secao-08"><span class="section-index-num">08</span><span>Documentação e Acesso Digital</span></a>
     <a href="#secao-09"><span class="section-index-num">09</span><span>Conferência de Encerramento</span></a>
-    <a href="#secao-10"><span class="section-index-num">10</span><span>Prova Social</span></a>
+    <a href="#secao-10"><span class="section-index-num">10</span><span>Prova de Vida</span></a>
     <a href="#secao-11"><span class="section-index-num">11</span><span>Aviso de Segurança</span></a>
   </nav>
 </aside>
@@ -2038,11 +2039,11 @@
     </div>
   </div>
 
-  <!-- SEÇÃO 10: PROVA SOCIAL -->
+  <!-- SEÇÃO 10: PROVA DE VIDA -->
   <div class="section" id="secao-10">
     <div class="section-header">
       <span class="section-num">10</span>
-      <span class="section-title">Prova Social</span>
+      <span class="section-title">Prova de Vida</span>
     </div>
 
     <div class="info-card">
@@ -2113,6 +2114,21 @@
   </div>
 </div>
 
+<!-- LAST SUMMARY OVERLAY — existe somente durante a sessão desta aba -->
+<div class="overlay" id="lastSummaryOverlay" onclick="closeLastSummaryOnBg(event)">
+  <div class="modal" id="lastSummaryModal">
+    <h2>Último Resumo da Reunião</h2>
+    <div class="modal-top-actions">
+      <button class="btn btn-primary" type="button" onclick="copyLastSummary()">Copiar Último Resumo</button>
+    </div>
+    <div id="lastSummaryContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" onclick="closeLastSummary()">Fechar</button>
+      <button class="btn btn-primary" type="button" onclick="copyLastSummary()">Copiar Texto</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -2121,6 +2137,7 @@
   ========================================================= */
   let painValue = null;
   const THEME_STORAGE_KEY = 'triagem-theme';
+  const LAST_SUMMARY_SESSION_KEY = 'triagem-last-summary';
 
   /* =========================================================
      TEMA CLARO / ESCURO
@@ -2695,6 +2712,10 @@
   function clearAll() {
     if (!confirm('Limpar todo o formulário?')) return;
 
+    // Antes de iniciar uma nova reunião, guarda somente o resumo atual como histórico.
+    // O sessionStorage é exclusivo desta aba e é descartado quando ela é encerrada.
+    saveCurrentSummaryAsLast();
+
     document.querySelectorAll('input[type=text],input[type=date],input[type=number],input[type=tel],input[type=password],textarea,select').forEach(el => {
       el.value = '';
       el.classList.remove('filled');
@@ -3039,6 +3060,116 @@
     }
   }
 
+  /* =========================================================
+     HISTÓRICO TEMPORÁRIO — somente o último resumo da aba
+  ========================================================= */
+  function currentSummaryText() {
+    const blocks = [buildSummaryTextBlock('TRIAGEM PRINCIPAL', fieldDefs)];
+    if (r('temSegundoAcidente') === 'Sim' && hasAnyValue(fieldDefsSecondAccident)) {
+      blocks.push(buildSummaryTextBlock('ACIDENTE 2', fieldDefsSecondAccident));
+    }
+    return blocks.filter(Boolean).join('\n\n').trim();
+  }
+
+  function hasCurrentMeetingData() {
+    // Evita salvar um formulário vazio como histórico.
+    const meaningfulIds = [
+      'nome', 'idade', 'dataAcidente', 'comoOcorreu', 'hospital',
+      'profissaoEpoca', 'profissaoAtual', 'observacoes'
+    ];
+    if (meaningfulIds.some(id => v(id))) return true;
+
+    const meaningfulRadios = [
+      'tipoAcidente', 'cirurgia', 'fisio', 'auxilioDoenca',
+      'atividadesDiarias', 'frequenciaDor'
+    ];
+    return meaningfulRadios.some(name => r(name));
+  }
+
+  function saveCurrentSummaryAsLast() {
+    if (!hasCurrentMeetingData()) return;
+
+    const text = currentSummaryText();
+    if (!text) return;
+
+    const payload = {
+      text,
+      clientName: v('nome') || 'Cliente não informado',
+      savedAt: new Date().toISOString()
+    };
+
+    sessionStorage.setItem(LAST_SUMMARY_SESSION_KEY, JSON.stringify(payload));
+  }
+
+  function getLastSummary() {
+    const raw = sessionStorage.getItem(LAST_SUMMARY_SESSION_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function escapeHtml(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatSavedAt(iso) {
+    if (!iso) return '';
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function openLastSummary() {
+    const data = getLastSummary();
+    const content = document.getElementById('lastSummaryContent');
+
+    if (!data || !data.text) {
+      content.innerHTML = `
+        <div class="info-card">
+          <p><strong>Nenhum resumo anterior disponível nesta aba.</strong></p>
+          <p>Depois que uma reunião for finalizada e você clicar em <strong>Limpar</strong> para iniciar a próxima, o resumo dela aparecerá aqui.</p>
+        </div>`;
+    } else {
+      const when = formatSavedAt(data.savedAt);
+      content.innerHTML = `
+        <div class="info-card" style="margin-bottom:16px">
+          <p><strong>${escapeHtml(data.clientName || 'Última reunião')}</strong>${when ? ` — salvo em ${escapeHtml(when)}` : ''}</p>
+          <p style="color:var(--muted);font-size:11px">Este histórico é temporário, guarda somente a última reunião e existe apenas enquanto esta aba permanecer aberta.</p>
+        </div>
+        <pre style="white-space:pre-wrap;word-break:break-word;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;line-height:1.65;color:var(--text)">${escapeHtml(data.text)}</pre>`;
+    }
+
+    document.getElementById('lastSummaryOverlay').classList.add('open');
+  }
+
+  function closeLastSummary() {
+    document.getElementById('lastSummaryOverlay').classList.remove('open');
+  }
+
+  function closeLastSummaryOnBg(e) {
+    if (e.target === document.getElementById('lastSummaryOverlay')) closeLastSummary();
+  }
+
+  function copyLastSummary() {
+    const data = getLastSummary();
+    if (!data || !data.text) {
+      showToast('Nenhum resumo anterior disponível');
+      return;
+    }
+    navigator.clipboard.writeText(data.text).then(() => showToast('Último resumo copiado!'));
+  }
+
   function openSummary() {
     updateClosingChecklist();
     const container = document.getElementById('summaryContent');
@@ -3057,11 +3188,7 @@
   function closeOnBg(e) { if (e.target === document.getElementById('summaryOverlay')) closeOverlay(); }
 
   function copyText() {
-    const blocks = [buildSummaryTextBlock('TRIAGEM PRINCIPAL', fieldDefs)];
-    if (r('temSegundoAcidente') === 'Sim' && hasAnyValue(fieldDefsSecondAccident)) {
-      blocks.push(buildSummaryTextBlock('ACIDENTE 2', fieldDefsSecondAccident));
-    }
-    navigator.clipboard.writeText(blocks.filter(Boolean).join('\n\n')).then(() => showToast('Copiado para a área de transferência!'));
+    navigator.clipboard.writeText(currentSummaryText()).then(() => showToast('Copiado para a área de transferência!'));
   }
 
   function showToast(msg) {
