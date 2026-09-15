@@ -1310,6 +1310,13 @@
       <input type="text" id="cirurgiaTexto" placeholder="Ex: Fixação com placa e 3 parafusos no fêmur..." oninput="track(this)">
     </div>
 
+    <div class="field" id="cirurgiaNaoMotivoField" style="display:none">
+      <label>Por que não foi realizada cirurgia?
+        <span class="tip">Explique o motivo informado pelo cliente ou pela equipe médica.</span>
+      </label>
+      <textarea id="cirurgiaNaoMotivo" placeholder="Ex: O médico optou por tratamento conservador; não houve indicação cirúrgica; aguardava cirurgia pelo SUS; recusou o procedimento; outro motivo..." oninput="track(this)" style="min-height:70px"></textarea>
+    </div>
+
     <div class="field">
       <label>Utilizou algum tipo de imobilização ou apoio?
         <span class="tip">É possível selecionar mais de uma opção.</span>
@@ -1431,6 +1438,13 @@
     <div class="field" id="cirurgiaDetail_2" style="display:none">
       <label>Detalhes da cirurgia</label>
       <input type="text" id="cirurgiaTexto_2" placeholder="Ex: Fixação com placa e 3 parafusos no fêmur..." oninput="track(this)">
+    </div>
+
+    <div class="field" id="cirurgiaNaoMotivoField_2" style="display:none">
+      <label>Por que não foi realizada cirurgia?
+        <span class="tip">Explique o motivo informado pelo cliente ou pela equipe médica.</span>
+      </label>
+      <textarea id="cirurgiaNaoMotivo_2" placeholder="Ex: O médico optou por tratamento conservador; não houve indicação cirúrgica; aguardava cirurgia pelo SUS; recusou o procedimento; outro motivo..." oninput="track(this)" style="min-height:70px"></textarea>
     </div>
 
     <div class="field">
@@ -2219,7 +2233,7 @@
       });
       wrap.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(el => el.checked = false);
     });
-    ['cirurgiaDetail_2', 'fisioDetalheField_2', 'tempoApoioGessoField_2', 'tempoApoioTipoiaField_2', 'tempoApoioMuletasField_2', 'tempoApoioCadeiraField_2'].forEach(id => {
+    ['cirurgiaDetail_2', 'cirurgiaNaoMotivoField_2', 'fisioDetalheField_2', 'tempoApoioGessoField_2', 'tempoApoioTipoiaField_2', 'tempoApoioMuletasField_2', 'tempoApoioCadeiraField_2'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -2452,13 +2466,23 @@
 
       if (name === 'cirurgia_2') {
         const sel = document.querySelector('input[name="cirurgia_2"]:checked');
-        const show = sel && sel.value === 'Sim';
+        const isSim = !!sel && sel.value === 'Sim';
+        const isNao = !!sel && sel.value === 'Não';
         const detalheField = document.getElementById('cirurgiaDetail_2');
         const detalheTexto = document.getElementById('cirurgiaTexto_2');
-        detalheField.style.display = show ? 'block' : 'none';
-        if (!show) {
+        const motivoField = document.getElementById('cirurgiaNaoMotivoField_2');
+        const motivoTexto = document.getElementById('cirurgiaNaoMotivo_2');
+
+        detalheField.style.display = isSim ? 'block' : 'none';
+        motivoField.style.display = isNao ? 'block' : 'none';
+
+        if (!isSim) {
           detalheTexto.value = '';
           detalheTexto.classList.remove('filled');
+        }
+        if (!isNao) {
+          motivoTexto.value = '';
+          motivoTexto.classList.remove('filled');
         }
       }
 
@@ -2514,7 +2538,24 @@
 
       if (name === 'cirurgia') {
         const sel = document.querySelector('input[name="cirurgia"]:checked');
-        document.getElementById('cirurgiaDetail').style.display = sel && sel.value === 'Sim' ? 'block' : 'none';
+        const isSim = !!sel && sel.value === 'Sim';
+        const isNao = !!sel && sel.value === 'Não';
+        const detalheField = document.getElementById('cirurgiaDetail');
+        const detalheTexto = document.getElementById('cirurgiaTexto');
+        const motivoField = document.getElementById('cirurgiaNaoMotivoField');
+        const motivoTexto = document.getElementById('cirurgiaNaoMotivo');
+
+        detalheField.style.display = isSim ? 'block' : 'none';
+        motivoField.style.display = isNao ? 'block' : 'none';
+
+        if (!isSim) {
+          detalheTexto.value = '';
+          detalheTexto.classList.remove('filled');
+        }
+        if (!isNao) {
+          motivoTexto.value = '';
+          motivoTexto.classList.remove('filled');
+        }
       }
 
       if (name === 'ctps') {
@@ -2727,10 +2768,10 @@
 
     [
       'medicacaoDetalheField', 'compEnderecoDetalheField', 'compEnderecoWhatsappField',
-      'docFotoWhatsappField', 'cirurgiaDetail', 'fisioDetalheField',
+      'docFotoWhatsappField', 'cirurgiaDetail', 'cirurgiaNaoMotivoField', 'fisioDetalheField',
       'tempoApoioGessoField', 'tempoApoioTipoiaField', 'tempoApoioMuletasField', 'tempoApoioCadeiraField',
       'govbrSenhaField', 'govbrMotivoField', 'govRecoveryQuestions', 'contatoAlternativoDados', 'contatoWhatsappField', 'ctpsWhatsappField',
-      'cirurgiaDetail_2', 'fisioDetalheField_2',
+      'cirurgiaDetail_2', 'cirurgiaNaoMotivoField_2', 'fisioDetalheField_2',
       'tempoApoioGessoField_2', 'tempoApoioTipoiaField_2', 'tempoApoioMuletasField_2', 'tempoApoioCadeiraField_2',
       'segundoAcidenteSec2', 'segundoAcidenteSec3'
     ].forEach(id => {
@@ -2769,7 +2810,7 @@
     { label: 'Boletim de ocorrência', get: () => r('bo') },
     { label: 'Registro de CAT', get: () => r('cat') },
     { label: 'Segundo acidente relevante', get: () => r('temSegundoAcidente') },
-    { label: 'Cirurgia', get: () => r('cirurgia') + (v('cirurgiaTexto') ? ' — ' + v('cirurgiaTexto') : '') },
+    { label: 'Cirurgia', get: () => { const val = r('cirurgia'); if (val === 'Sim') return `Sim${v('cirurgiaTexto') ? ' — ' + v('cirurgiaTexto') : ''}`; if (val === 'Não') return `Não${v('cirurgiaNaoMotivo') ? ' — Motivo: ' + v('cirurgiaNaoMotivo') : ''}`; return ''; } },
     { label: 'Imobilização / apoio', get: () => supportSummary('apoio') },
     { label: 'Fisioterapia', get: () => r('fisio') },
     { label: 'Detalhes da fisioterapia', get: () => v('fisioDetalhe') },
@@ -2870,7 +2911,7 @@
     { label: 'Cidade/Estado hospital da cirurgia', get: () => v('cidadeHospitalCirurgia_2') },
     { label: 'Boletim de ocorrência', get: () => r('bo_2') },
     { label: 'Registro de CAT', get: () => r('cat_2') },
-    { label: 'Cirurgia', get: () => r('cirurgia_2') + (v('cirurgiaTexto_2') ? ' — ' + v('cirurgiaTexto_2') : '') },
+    { label: 'Cirurgia', get: () => { const val = r('cirurgia_2'); if (val === 'Sim') return `Sim${v('cirurgiaTexto_2') ? ' — ' + v('cirurgiaTexto_2') : ''}`; if (val === 'Não') return `Não${v('cirurgiaNaoMotivo_2') ? ' — Motivo: ' + v('cirurgiaNaoMotivo_2') : ''}`; return ''; } },
     { label: 'Imobilização / apoio', get: () => supportSummary('apoio_2', '_2') },
     { label: 'Fisioterapia', get: () => r('fisio_2') },
     { label: 'Detalhes da fisioterapia', get: () => v('fisioDetalhe_2') },
